@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Not found">
+  <section class="section nf">
+    <div class="wrap nf__inner">
+      <p class="eyebrow">404</p>
+      <h1 class="nf__title gold-text">Lost the thread.</h1>
+      <p class="nf__body">This page doesn't exist (yet). Let's get you back.</p>
+      <a href="/" class="btn">Return home</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { min-height: 70vh; display: flex; align-items: center; }
+  .nf__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  .nf__title { font-size: clamp(2.5rem, 8vw, 5rem); }
+  .nf__body { color: var(--text-muted); margin-bottom: 0.75rem; }
+</style>

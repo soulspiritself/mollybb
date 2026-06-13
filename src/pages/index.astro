@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const work = [
+  {
+    num: '01',
+    title: 'Words',
+    blurb: 'Essays, stories, and the slow craft of a sentence.',
+  },
+  {
+    num: '02',
+    title: 'Image',
+    blurb: 'Photography and visual work. Light, frame, and moment.',
+  },
+  {
+    num: '03',
+    title: 'Ideas',
+    blurb: 'Projects in progress and experiments worth keeping.',
+  },
+];
+---
+<BaseLayout>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero__inner">
+      <p class="eyebrow reveal">Creative Portfolio</p>
+      <h1 class="hero__title gold-text reveal">Molly&nbsp;BB</h1>
+      <hr class="rule reveal" />
+      <p class="hero__tag reveal">
+        Writer and maker. A home for words, image, and ideas, gathered in one quiet place.
+      </p>
+      <div class="hero__cta reveal">
+        <a href="#work" class="btn">View work</a>
+        <a href="#contact" class="btn btn--ghost">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero__scroll" aria-hidden="true">
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- Work -->
+  <section id="work" class="section">
+    <div class="wrap">
+      <p class="eyebrow reveal">Selected Work</p>
+      <h2 class="section__title reveal">A portfolio taking shape.</h2>
+      <div class="cards">
+        {work.map((w) => (
+          <article class="card reveal">
+            <span class="card__num">{w.num}</span>
+            <h3 class="card__title">{w.title}</h3>
+            <p class="card__blurb">{w.blurb}</p>
+            <span class="card__soon">Coming soon</span>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section section--alt">
+    <div class="wrap about">
+      <p class="eyebrow reveal">About</p>
+      <p class="about__lead reveal">
+        Molly is a creative working across writing and image. This site is the
+        beginning of a portfolio, a place to collect the work as it grows.
+      </p>
+      <p class="about__body reveal">
+        More to come. For now, consider it an opening page: a name, a direction,
+        and room to fill.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section contact">
+    <div class="wrap contact__inner">
+      <p class="eyebrow reveal">Contact</p>
+      <h2 class="contact__title reveal">Say hello.</h2>
+      <p class="contact__body reveal">
+        For collaborations, commissions, or a quiet word.
+      </p>
+      <a href="mailto:hello@mollybb.com" class="btn reveal">hello@mollybb.com</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- Hero ---- */
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+  }
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .hero__title {
+    font-size: clamp(3.5rem, 14vw, 9rem);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 0.95;
+  }
+  .hero__tag {
+    max-width: 34ch;
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .hero__cta {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+  .btn--ghost {
+    border-color: var(--black-line);
+    color: var(--text-muted);
+  }
+  .btn--ghost:hover {
+    background: var(--black-soft);
+    color: var(--gold-bright);
+    border-color: var(--gold);
+  }
+  .hero__scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.66rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .hero__scroll span { position: relative; }
+  .hero__scroll span::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 1.5rem;
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(var(--gold), transparent);
+  }
+
+  /* ---- Sections ---- */
+  .section__title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    max-width: 18ch;
+    margin-bottom: 2.5rem;
+  }
+  .section--alt {
+    background: var(--black-soft);
+    border-block: 1px solid var(--black-line);
+  }
+
+  /* ---- Work cards ---- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+  }
+  .card {
+    position: relative;
+    padding: 2.25rem 1.75rem 2rem;
+    border: 1px solid var(--black-line);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(201,169,110,0.04), transparent);
+    overflow: hidden;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+  }
+  .card__num {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    color: var(--gold-deep);
+    line-height: 1;
+  }
+  .card__title {
+    font-size: 1.7rem;
+    margin: 0.75rem 0 0.6rem;
+    color: var(--text);
+  }
+  .card__blurb {
+    color: var(--text-muted);
+    font-size: 0.96rem;
+    margin-bottom: 1.5rem;
+  }
+  .card__soon {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ---- About ---- */
+  .about__lead {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3.5vw, 2.3rem);
+    line-height: 1.3;
+    max-width: 24ch;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  .about__body {
+    max-width: 48ch;
+    color: var(--text-muted);
+  }
+
+  /* ---- Contact ---- */
+  .contact__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  .contact__title {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+  }
+  .contact__body {
+    color: var(--text-muted);
+    max-width: 32ch;
+    margin-bottom: 0.75rem;
+  }
+</style>

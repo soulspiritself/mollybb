@@ -1,0 +1,149 @@
+/* =========================================================
+   Molly BB — brand + layout. Single source of truth.
+   Elegant gold-on-black: a creative portfolio.
+   ========================================================= */
+
+:root {
+  /* Surfaces */
+  --black: #0a0a0b;        /* page background */
+  --black-soft: #121214;   /* raised surfaces / cards */
+  --black-line: #232327;   /* hairline borders */
+
+  /* Gold accent (mirrors the MOLLY BB wordmark) */
+  --gold: #c9a96e;         /* primary accent */
+  --gold-bright: #e8cf9a;  /* highlight / hover */
+  --gold-deep: #9c7c44;    /* shadow side of gradient */
+
+  /* Type */
+  --text: #f3efe6;         /* warm off-white */
+  --text-muted: #a7a39a;   /* secondary copy */
+  --text-faint: #6f6c66;   /* labels, meta */
+
+  /* Fonts */
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Rhythm */
+  --maxw: 1100px;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle gold vignette behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 600px at 50% -10%, rgba(201, 169, 110, 0.10), transparent 70%),
+    radial-gradient(700px 500px at 100% 100%, rgba(201, 169, 110, 0.05), transparent 70%);
+}
+
+h1, h2, h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0;
+}
+
+p { margin: 0 0 1rem; }
+
+a {
+  color: var(--gold-bright);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover { color: var(--gold); }
+
+img { max-width: 100%; display: block; }
+
+/* ---- Layout helpers ---- */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section { padding-block: clamp(4rem, 10vw, 8rem); }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 1.25rem;
+}
+
+/* Gold gradient text used for the wordmark + display accents */
+.gold-text {
+  background: linear-gradient(100deg, var(--gold-deep), var(--gold-bright) 45%, var(--gold) 75%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Thin gold rule */
+.rule {
+  height: 1px;
+  width: 64px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  border: 0;
+  margin: 0;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  color: var(--gold-bright);
+  background: transparent;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.15s ease;
+}
+.btn:hover {
+  background: var(--gold);
+  color: var(--black);
+  transform: translateY(-1px);
+}
+
+/* ---- Reveal on scroll ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}

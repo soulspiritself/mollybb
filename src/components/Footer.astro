@@ -1,0 +1,34 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span class="footer__brand gold-text">Molly&nbsp;BB</span>
+    <span class="footer__meta">&copy; {year} Molly BB. All rights reserved.</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--black-line);
+    padding-block: 2.5rem;
+  }
+  .footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .footer__brand {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+  .footer__meta {
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--text-faint);
+  }
+</style>
