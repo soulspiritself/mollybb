@@ -1,0 +1,95 @@
+export const BOARDS = {
+  head: ['Board', 'Section A, no calculator', 'Section B, calculator', 'Total', 'Pass mark (unofficial, set per paper)'],
+  rows: [
+    ['Pearson Edexcel', '25 min, 16 marks', '1h 30m, 48 marks', '64', 'about 37 to 38'],
+    ['Open Awards', '30 min, 15 marks', '1h 30m, 45 marks', '60', 'about 36'],
+    ['City and Guilds', '25 min, 15 marks', '1h 20m, 45 marks', '60', 'about 29 to 33'],
+    ['NCFE', '30 min, 15 marks', '1h 30m, 45 marks', '60', 'about 30'],
+  ],
+};
+
+export const SESSION = {
+  head: ['Minutes', 'What happens'],
+  rows: [
+    ['0 to 5', 'Warm-up: three quick ones from the review deck. Two from earlier topics, one mental arithmetic. Wrong answers go straight in the error log; no reteaching now.'],
+    ['5 to 18', 'Today’s idea: concrete, then picture, then number. Objects on the table. She explains it back in her own words at the end.'],
+    ['18 to 27', 'Two past-paper questions on today’s idea, done the four-step way: read, draw, calculate, check, answer in a sentence. Mark together for method marks.'],
+    ['27 to 30', 'One line in the learning log ("today I can…") and one index card for the review deck if the idea is new.'],
+  ],
+};
+
+export const MODULES = {
+  head: ['Module', 'DfE statements', 'She must be able to', 'Concrete hook'],
+  rows: [
+    ['N1 Numbers and place value', '1, 2, 9, 12', 'Order big and negative numbers; the four operations with a calculator and, in simple cases, without; BIDMAS; estimate and check', 'Temperatures, bank balances, populations (Athens in 431 BC: about 300,000), Roman army sizes'],
+    ['N2 Fractions', '4, 7, 8', 'Fraction of an amount; order and compare; add and subtract simple fractions and mixed numbers; one number as a fraction of another', 'Chocolate bars, pizza, recipe scaling, "3 out of 8 jurors"'],
+    ['N3 Decimals', '9, 10', 'Order decimals; four operations to three decimal places', 'Money, measurements, petrol prices'],
+    ['N4 Percentages', '4, 5, 6', 'Percent of an amount; one amount as a percent of another; increase and decrease; find the original after a change', 'Sales, VAT, pay rises, "the tribute rose by 20%"'],
+    ['N5 Ratio and proportion', '11', 'Share in a ratio; simplify; scale recipes; direct proportion by the unitary method; inverse proportion; best buy', 'Squash and water, paint mixing, recipes for 4 to 10 people, exchange rates'],
+    ['N6 Formulas', '3', 'Substitute numbers into a formula written in words or symbols', 'Cost = 40 + 25 × hours; taxi fares'],
+    ['M1 Money', '13', 'Budgets; discounts; VAT; simple and compound interest; income tax basics; comparing deals', 'Her own monthly budget; a phone contract; a savings account'],
+    ['M2 Units and conversion', '14, 15', 'Metric conversions; metric to imperial by a given factor or a conversion graph; speed; rates of pay; density', 'Driving distances, recipes in ounces, wages, "Pheidippides ran 240 km in two days"'],
+    ['M3 Perimeter, area, volume', '16, 17', 'Rectangles, triangles, circles and shapes made of them; cuboids and cylinders; surface area', 'Carpet, fencing, paint tins, the Parthenon’s floor (69.5 m by 30.9 m)'],
+    ['M4 Scale, coordinates, 3D', '18 to 22', 'Scale drawings both ways; coordinates including negatives; plans and elevations; angles in shapes', 'Room plans, maps, a model Acropolis, LEGO'],
+    ['H1 Averages', '23, 24, 25', 'Mean, median, mode, range; estimated mean from a grouped table; compare two data sets', 'Study times, football results, temperatures, "ages of the jury"'],
+    ['H2 Charts and probability', '26, 27, 28', 'Bar, pie and line charts; scatter diagrams and correlation; probability as fraction, decimal, percent; combined events by table', 'A family survey, weather and ice-cream sales, dice and cards'],
+  ],
+};
+
+export const WEEKS = {
+  head: ['Week', 'Mon', 'Sessions (Mon to Thu)', 'Friday check'],
+  rows: [
+    { week: 1, cells: ['1', '5 Oct', 'The calculator: every key she will use. The four-step routine on three easy questions. Set up the error log, learning log and review deck. <strong>Diagnostic</strong> on a Level 1 sample paper, Section B, untimed, chosen so it ends in success.', 'Score it together. No judgement. Note the three weakest areas.'] },
+    { week: 2, cells: ['2', '12 Oct', 'How the paper is marked (method, check and explain marks). N1 place value and ordering with negatives (thermometer, bank statement). Tables and timetables.', 'N1 and tables'] },
+    { week: 3, cells: ['3', '19 Oct', 'N1: column addition and subtraction, one method; estimating by rounding to one significant figure; checking by estimate; BIDMAS on the calculator, brackets first.', 'N1'] },
+    { cls: 'is-break', cells: ['', '26 Oct', 'Break. No maths.', ''] },
+    { week: 4, cells: ['4', '2 Nov', 'N1: grid multiplication and short division, one way each; multiplying and dividing by 10, 100, 1000; the same with the calculator and "does it look right?"', 'N1'] },
+    { week: 5, cells: ['5', '9 Nov', 'N2 Fractions 1: a bar cut into equal parts; fraction of an amount with coins ("divide by the bottom, times by the top"); one number as a fraction of another; simplifying with the fraction key.', 'N2'] },
+    { week: 6, cells: ['6', '16 Nov', 'N2 Fractions 2: comparing fractions by turning them into decimals on the calculator (the only method needed); adding and subtracting with the fraction key; mixed numbers.', 'N2'] },
+    { week: 7, cells: ['7', '23 Nov', 'N3 Decimals: ordering (line up the point); the four operations, by hand in simple cases; rounding to one and two places; money always to two places.', 'N3'] },
+    { week: 8, cells: ['8', '30 Nov', 'N4 Percentages 1: percent on a 10 by 10 grid; percent of an amount (amount ÷ 100 × percent); 10%, 5%, 1% building blocks without the calculator; one amount as a percent of another.', 'N4'] },
+    { week: 9, cells: ['9', '7 Dec', 'N4 Percentages 2: increase and decrease (find the change, then add or subtract); reverse percentages using the bar model.', 'N4'] },
+    { week: 10, cells: ['10', '14 Dec', 'M1 Money 1: budgets in a table; discounts and VAT as percentages; best buy by cost per unit; simple interest.', '<strong>Phase 1 review:</strong> 8 mixed questions, 25 min timed'] },
+    { cls: 'is-break', cells: ['', '21 Dec', 'Christmas. No maths.', ''] },
+    { week: 11, cells: ['11', '4 Jan', 'M1 Money 2: compound interest year by year in a table, never the formula; income tax with an allowance and one rate; comparing two deals over a year. N6 Formulas: substituting, BIDMAS applies.', 'M1 and N6'] },
+    { week: 12, cells: ['12', '11 Jan', 'N5 Ratio 1: sharing in a ratio with boxes (3 boxes and 2 boxes, share the total into 5); simplifying; ratio as a fraction. Sweets first.', 'N5'] },
+    { week: 13, cells: ['13', '18 Jan', 'N5 Ratio 2: the unitary method ("find one, then find many"); recipe scaling; exchange rates; inverse proportion by table.', 'N5'] },
+    { week: 14, cells: ['14', '25 Jan', 'M2 Units 1: the metric staircase (mm, cm, m, km; g, kg; ml, l); imperial by a given factor; reading a conversion graph.', 'M2'] },
+    { week: 15, cells: ['15', '1 Feb', 'M2 Units 2: time (24-hour clock, durations, timetables); speed = distance ÷ time with the triangle drawn every time; rates of pay; density, one session only.', 'M2'] },
+    { week: 16, cells: ['16', '8 Feb', 'M3 Shape 1: perimeter by walking round it; area by counting squares, then length × width; a triangle as half a rectangle (cut one out); composite shapes by cutting into rectangles.', 'M3'] },
+    { cls: 'is-break', cells: ['', '15 Feb', 'Break. No maths.', ''] },
+    { week: 17, cells: ['17', '22 Feb', 'M3 Shape 2: circles. String round a tin: always "3 and a bit" times across. Circumference = π × diameter; area = π × radius × radius. Half and quarter circles. These two formulas are memorised; all others are given.', 'M3'] },
+    { week: 18, cells: ['18', '1 Mar', 'M3 Shape 3: volume of a cuboid (count cubes, then l × w × h); a cylinder as a stack of circles; surface area from the net; 1 litre = 1000 cm³.', 'M3'] },
+    { week: 19, cells: ['19', '8 Mar', 'M4 Space 1: scale drawings (1 cm represents 2 m; plan a bedroom on squared paper); map scales (1 : 50 000); coordinates in all four quadrants (battleships).', 'M4'] },
+    { week: 20, cells: ['20', '15 Mar', 'M4 Space 2: plans and elevations (build a shape from sugar cubes, draw front, side, top); angles in triangles and quadrilaterals (measure first); on a straight line and at a point.', 'M4'] },
+    { week: 21, cells: ['21', '22 Mar', '<strong>Phase 2 review.</strong> One mixed Section B page from a past paper each day.', 'Section A of a past paper, timed, no calculator'] },
+    { cls: 'is-break', cells: ['', '29 Mar', 'Easter, two weeks. No maths.', ''] },
+    { week: 22, cells: ['22', '12 Apr', 'H1 Averages 1: mean as "share it out equally" (counters); median as "line them up, find the middle"; mode; range. All from a list.', 'H1'] },
+    { week: 23, cells: ['23', '19 Apr', 'H1 Averages 2: mean from a frequency table; estimated mean from a grouped table with midpoints (a four-column table, always the same); comparing two data sets in a sentence.', 'H1'] },
+    { week: 24, cells: ['24', '26 Apr', 'H2 Charts: reading and drawing bar, dual bar and line charts; pie charts (360 ÷ total × frequency, with the protractor); choosing a chart and saying why.', 'H2'] },
+    { week: 25, cells: ['25', '3 May', 'H2: scatter diagrams and correlation in a sentence; probability as a fraction (ways it can happen ÷ total ways), then decimal and percent on the calculator.', 'H2'] },
+    { week: 26, cells: ['26', '10 May', 'H2: combined events by listing all outcomes in a table (two dice, two coins, a two-course menu); two-way tables; expected number = probability × trials.', 'H2'] },
+    { week: 27, cells: ['27', '17 May', '<strong>Mock 1</strong>, split across the week: Mon Section A timed; Tue and Wed Section B in two halves; Thu mark it, fill the log, reteach the weakest topic.', 'Re-do the five worst questions'] },
+    { week: 28, cells: ['28', '24 May', '<strong>Exam craft.</strong> Mon: read the question (underline the numbers, circle the ask, box the units). Tue: write a check for every question in a paper. Wed: one-sentence explanations. Thu: Section A drill. <strong>Booking gate:</strong> Mock 1 at 55% or more, book w/c 21 June; below, book w/c 5 July and add two weeks.', 'Section A timed'] },
+    { cls: 'is-break', cells: ['', '31 May', 'Break. Ten minutes of review deck a day only.', ''] },
+    { week: 29, cells: ['29', '7 Jun', '<strong>Mock 2</strong>, full paper in one sitting on Monday under exam conditions. Tue to Thu: mark, log, reteach, re-do.', 'Re-do the worst five'] },
+    { week: 30, cells: ['30', '14 Jun', '<strong>Mock 3</strong> on Monday. Tue and Wed: re-do the worst questions. Thu: review deck only. No new material. Sleep.', 'None. Rest.'] },
+    { week: 31, cells: ['31', '21 Jun', '<strong>Exam.</strong>', ''] },
+  ],
+};
+
+export const SCRIPTS = [
+  { t: 'Fractions of an amount', b: 'Twelve coins on the table. "Three quarters of them." Split into four equal piles (that is ÷ 4). Take three piles (that is × 3). Say the rule only after she has done it with coins five times: divide by the bottom, times by the top. On the calculator it is the same two key presses.' },
+  { t: 'Percentages', b: 'Draw a 10 by 10 grid. Shade 35 squares: that is 35%. "35% of £80" means 35 squares where the whole grid is £80, so each square is 80p. That is the calculator method: 80 ÷ 100 × 35. Without a calculator: 10% is a row, 5% is half a row, 1% is a square. Build 35% as three rows and half a row.' },
+  { t: 'Reverse percentages', b: 'Draw a bar. Label the whole bar "100% = the original price, unknown". A 20% discount cuts off 20%, so the price she paid is the remaining 80%. Write the price paid under the 80%. Find 1% (divide by 80). Find 100% (multiply by 100). Never teach "divide by 0.8". The bar does it.' },
+  { t: 'Ratio', b: 'Share £50 in the ratio 3 : 2. Draw 3 boxes and 2 boxes. Five boxes altogether. £50 ÷ 5 = £10 a box. 3 boxes = £30, 2 boxes = £20. Check: £30 + £20 = £50. Every ratio question in the exam is this picture.' },
+  { t: 'Proportion', b: 'Find one, then find many. 4 people need 300 g of flour. One person needs 300 ÷ 4 = 75 g. Ten people need 75 × 10 = 750 g. Two lines, every time.' },
+  { t: 'Area', b: 'Squared paper. Draw the rectangle. Count the squares. Only then say length times width. For a triangle, draw it inside a rectangle and cut it out to prove it is half. For an L-shape, draw a line that splits it into two rectangles, find each, add. Label the sides you had to work out.' },
+  { t: 'Circles', b: 'Wrap string round a tin, measure the string, measure across the tin, divide. It is always about 3.14. That is π. Circumference is "π times across". Area is "π times radius times radius". She memorises those two sentences and nothing else.' },
+  { t: 'Volume of a cylinder', b: 'A stack of circles. Area of the circle, times how high the stack is.' },
+  { t: 'Mean', b: 'Five people have 3, 5, 8, 2 and 7 sweets. Pool them (25), share them out equally (5 each). That is the mean: add them all, divide by how many.' },
+  { t: 'Estimated mean from a grouped table', b: 'A four-column table, always the same headings: Group, Frequency, Midpoint, Frequency × midpoint. Add the last column, divide by the total frequency. The midpoint is "we do not know each exact value, so we guess the middle". Do the first one with the family’s actual heights.' },
+  { t: 'Combined probability', b: 'Two coins: draw a grid, heads and tails along the top, heads and tails down the side, fill in the four squares. "Both heads" is one square out of four. Never use tree diagrams; the exam accepts a table or a list and they are easier.' },
+  { t: 'Speed, distance, time', b: 'The triangle with D on top, S and T underneath. Cover the one you want. First with a journey she knows: 60 miles to the coast in an hour and a half.' },
+  { t: 'Section A, no calculator', b: 'It is 15 or 16 marks out of 60 or 64. Column addition and subtraction, grid multiplication of two-digit numbers, short division, times tables to 12, the percentage building blocks. Ten minutes each Monday from week 3. If it stays weak, accept it: she can pass with half marks on Section A and 70% on Section B.' },
+];

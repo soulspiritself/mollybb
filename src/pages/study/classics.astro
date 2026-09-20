@@ -1,0 +1,91 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import Table from '../../components/study/Table.astro';
+import Milestones from '../../components/study/Milestones.astro';
+import Bios from '../../components/study/Bios.astro';
+import { EXAM, TOPICS, T1, T2, T3, T4, MILESTONES, LEVELS } from '../../data/study/classics';
+import { byTag } from '../../data/study/people';
+---
+<StudyLayout
+  title="Classical Civilisation"
+  eyebrow="OCR H408 · three papers · no coursework"
+  lead="Homer and Virgil for the whole of Year 1, then Democracy and the Athenians and Imperial Image. More than half the marks are for analysis and evaluation, so every week ends with an argued paragraph or essay, never just notes."
+  current="classics"
+>
+  <Section title="The exam" intro="Three written papers in May and June 2028. Essays are marked on a five-level grid; the top level needs a sustained argument, precise references to the texts, and engagement with alternative views.">
+    <Table head={EXAM.head} rows={EXAM.rows} />
+    <div class="study-callout"><strong>Translations.</strong> Any translation may be used. Passages printed on the paper come from Rieu (Penguin) and Kline for Homer, and West (Penguin) and Kline for Virgil, so use one of those for close study. Kline is free online (links on the <a href="/study/resources/">resources page</a>).</div>
+  </Section>
+
+  <Section title="The four topics" intro="One a term. Each has an orientation below, then the week-by-week table further down.">
+    <div class="study-grid">
+      {TOPICS.map((t) => (
+        <article class="study-card">
+          <p class="study-card__kicker">{t.weeks}</p>
+          <h3 class="study-card__title">{t.title}</h3>
+          <p class="study-card__body">{t.intro}</p>
+          {t.reading && <p class="study-card__meta"><strong>Read:</strong> {t.reading}</p>}
+          {t.practice && <p class="study-card__meta"><strong>Practice:</strong> {t.practice}</p>}
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <Section title="How to work on every text" intro="The method is the same for every prescribed book or passage. The marks come from the book sheets and the weekly paragraphs, not from the textbook.">
+    <div class="study-prose">
+      <ol>
+        <li><strong>Read it once for the story</strong> in the 15:00 slot, no notes.</li>
+        <li><strong>Read it again with the book sheet:</strong> one A4 page per book with five headings. What happens. Who speaks and what it reveals. Three quotable moments (line reference plus a phrase of under ten words). Themes present. One link to another book.</li>
+        <li><strong>Textbook chapter afterwards</strong>, adding to the sheet in a different colour.</li>
+        <li><strong>One paragraph of analysis a week</strong> on a theme, with two quotations, written in eight minutes: point, evidence, explanation, link back to the question.</li>
+      </ol>
+      <p><strong>Themes the questions are about:</strong> heroism and the heroic code; the role of the gods and fate; xenia (hospitality) and its abuse; women; family and home (nostos); leadership; the values of the society depicted; narrative technique (similes, epithets, speeches, foreshadowing, ring composition); the poet's purpose and audience; for the Aeneid, pietas, furor, Augustan politics and the cost of empire.</p>
+      <p><strong>Scholars' card.</strong> Section C rewards quoting critics. Ten scholars, one sentence each, is enough: Jasper Griffin on Homer's gods, Bernard Knox on Odysseus the survivor, R. D. Williams and Philip Hardie on Virgil's ambivalence, W. R. Johnson on darkness in the Aeneid. The Bloomsbury textbook supplies quotable views.</p>
+    </div>
+  </Section>
+
+  <Section title="Term 1: the Odyssey" intro="Weeks 1 to 10, 5 October to 18 December 2026.">
+    <Table head={T1.head} rows={T1.rows} />
+  </Section>
+  <Section title="Term 2: the Aeneid" intro="Weeks 11 to 21, 4 January to 26 March 2027.">
+    <Table head={T2.head} rows={T2.rows} />
+  </Section>
+  <Section title="Term 3: Democracy and the Athenians" intro="Weeks 22 to 34, 12 April to 16 July 2027. Runs alongside the Ancient History Athens depth study; overlapping sources (Old Oligarch, Thucydides 2.36 to 42 and 2.65, Knights, Wasps, Plato Republic 6) are read once in the Ancient History slot and re-used here.">
+    <Table head={T3.head} rows={T3.rows} />
+  </Section>
+  <Section title="Term 4: Imperial Image" intro="Weeks 35 to 48, 6 September to 17 December 2027. Runs alongside the Ancient History Late Republic study, which supplies the reason Augustus needed an image.">
+    <Table head={T4.head} rows={T4.rows} />
+  </Section>
+  <Section title="Terms 5 and 6: mocks and revision">
+    <div class="study-prose">
+      <p>January mocks in weeks 49 and 50, then a debrief week. Re-read the three Odyssey and three Aeneid books that scored weakest. One Section C comparative essay a fortnight, alternating with 30-mark option essays. Build a ten-minute plan (five bullets, three quotations) for every essay question OCR has set since 2019.</p>
+      <p>Second mocks in the week of 24 April 2028, then two timed essays a week, one on Hero and one on an option, until the exams. Final fortnight: book sheets and scholars' cards only. No new material.</p>
+    </div>
+  </Section>
+
+  <Section title="Milestones" intro="The progress checkpoints. Timed, marked with the OCR mark scheme, and logged in the tracker.">
+    <Milestones items={MILESTONES} />
+  </Section>
+
+  <Section title="Marking guide" intro="Use the OCR mark scheme for the levels grid. This is what separates the levels on the 20- and 30-mark essays, in plain words.">
+    <Table head={LEVELS.head} rows={LEVELS.rows} />
+    <div class="study-prose">
+      <p><strong>Three checks that catch most problems:</strong> does the introduction answer the question in one sentence; does every paragraph contain a reference to the text; does the conclusion say something the introduction did not.</p>
+      <p><strong>Failure points named in OCR examiners' reports:</strong> retelling the plot; treating "the gods" as one thing; ignoring the poet (technique, purpose, audience); in Section C, writing two separate essays; in the option papers, describing a visual source without saying what it was for and whom it was for.</p>
+    </div>
+  </Section>
+
+  <Section title="Who's who: the Odyssey" intro="The people the questions are about. Full list on the Who's Who page.">
+    <Bios people={byTag('odyssey')} />
+  </Section>
+  <Section title="Who's who: the Aeneid">
+    <Bios people={byTag('aeneid')} />
+  </Section>
+  <Section title="Who's who: Imperial Image">
+    <Bios people={byTag('imperial')} />
+  </Section>
+  <Section title="Who's who: Democracy and the Athenians">
+    <Bios people={byTag('democracy')} />
+  </Section>
+</StudyLayout>

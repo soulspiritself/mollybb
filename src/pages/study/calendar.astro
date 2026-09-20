@@ -1,0 +1,95 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import ThisWeek from '../../components/study/ThisWeek.astro';
+import { WEEKS, BREAKS, TERMS, fmtDate } from '../../data/study/calendar';
+
+// Merge weeks and breaks into one chronological list, grouped by term.
+type Row = { kind: 'week'; w: (typeof WEEKS)[number] } | { kind: 'break'; b: (typeof BREAKS)[number] };
+const rows: Row[] = [
+  ...WEEKS.map((w) => ({ kind: 'week', w } as Row)),
+  ...BREAKS.map((b) => ({ kind: 'break', b } as Row)),
+].sort((a, c) => {
+  const da = a.kind === 'week' ? a.w.mon : a.b.from;
+  const dc = c.kind === 'week' ? c.w.mon : c.b.from;
+  return da.localeCompare(dc);
+});
+
+const termOf = (r: Row) => {
+  if (r.kind === 'week') return r.w.term;
+  // a break belongs to the term of the preceding week
+  const prev = WEEKS.filter((w) => w.mon < r.b.from).pop();
+  return prev ? prev.term : 'T1';
+};
+const grouped = TERMS.map((t) => ({ term: t, rows: rows.filter((r) => termOf(r) === t.id) }));
+---
+<StudyLayout
+  title="Calendar"
+  eyebrow="Week by week"
+  lead="Sixty-three teaching weeks from Monday 5 October 2026. Every week shows what each subject is doing, the Friday timed piece, and any milestone or deadline. The current week is highlighted."
+  current="calendar"
+>
+  <ThisWeek />
+
+  {grouped.map((g) => (
+    <Section title={`${g.term.name}: ${g.term.dates}`} intro={`Weeks ${g.term.weeks}.`}>
+      <div class="cal">
+        {g.rows.map((r) => r.kind === 'break' ? (
+          <div class="cal__break">
+            <span class="cal__break-label">{r.b.label}</span>
+            <span class="cal__break-dates">{fmtDate(r.b.from)} to {fmtDate(r.b.to)}</span>
+            {r.b.note && <span class="cal__break-note">{r.b.note}</span>}
+          </div>
+        ) : (
+          <article class="cal__week" data-week={r.w.n} id={`week-${r.w.n}`}>
+            <header class="cal__head">
+              <span class="cal__n">Week {r.w.n}</span>
+              <span class="cal__date">w/c {fmtDate(r.w.mon)}</span>
+              {r.w.label && <span class="cal__label">{r.w.label}</span>}
+            </header>
+            <div class="cal__grid">
+              <div><span class="cal__k">Classical Civ</span>{r.w.cc}</div>
+              <div><span class="cal__k">Ancient History</span>{r.w.ah}</div>
+              <div><span class="cal__k">Religious Studies</span>{r.w.rs}</div>
+              <div><span class="cal__k">Maths</span>{r.w.maths || '—'}</div>
+            </div>
+            {(r.w.friday || r.w.event) && (
+              <footer class="cal__foot">
+                {r.w.friday && <span><span class="cal__k">Friday</span>{r.w.friday}</span>}
+                {r.w.event && <span class="cal__event"><span class="cal__k">Event</span>{r.w.event}</span>}
+              </footer>
+            )}
+          </article>
+        ))}
+      </div>
+    </Section>
+  ))}
+</StudyLayout>
+
+<style>
+  .cal { display: grid; gap: 0.75rem; }
+  .cal__week {
+    border: 1px solid var(--black-line);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem 1rem;
+    background: linear-gradient(180deg, rgba(201,169,110,0.03), transparent);
+  }
+  .cal__week.is-now { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(201,169,110,0.35), 0 12px 40px -20px rgba(201,169,110,0.5); }
+  .cal__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .cal__n { font-family: var(--serif); font-size: 1.35rem; color: var(--gold-bright); }
+  .cal__date { font-size: 0.78rem; color: var(--text-faint); letter-spacing: 0.06em; }
+  .cal__label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold-deep); border-radius: 999px; padding: 0.2rem 0.6rem; }
+  .cal__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem 1rem; font-size: 0.9rem; color: var(--text-muted); }
+  .cal__grid > div { display: flex; flex-direction: column; gap: 0.15rem; }
+  .cal__k { font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-deep); }
+  .cal__foot { display: grid; gap: 0.5rem; margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px dashed var(--black-line); font-size: 0.88rem; color: var(--text-muted); }
+  .cal__foot > span { display: flex; flex-direction: column; gap: 0.15rem; }
+  .cal__event { color: var(--gold-bright); }
+  .cal__break {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline;
+    padding: 0.7rem 1.25rem; border-radius: 10px; background: var(--black-soft);
+    font-size: 0.85rem; color: var(--text-faint);
+  }
+  .cal__break-label { font-family: var(--serif); font-size: 1.05rem; color: var(--text-muted); }
+  .cal__break-note { flex-basis: 100%; }
+</style>

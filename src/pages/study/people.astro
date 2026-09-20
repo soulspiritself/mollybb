@@ -1,0 +1,48 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import Bios from '../../components/study/Bios.astro';
+import { PEOPLE } from '../../data/study/people';
+
+const groups = [
+  { id: 'odyssey', title: 'The Odyssey', sub: 'Classical Civ, Term 1' },
+  { id: 'aeneid', title: 'The Aeneid', sub: 'Classical Civ, Term 2' },
+  { id: 'democracy', title: 'Democracy and the Athenians', sub: 'Classical Civ, Term 3' },
+  { id: 'imperial', title: 'Imperial Image', sub: 'Classical Civ, Term 4' },
+  { id: 'greek-history', title: 'Greeks and Persians, 492 to 404', sub: 'Ancient History, Terms 1 and 2' },
+  { id: 'athens', title: 'Athens, c.460 to 399', sub: 'Ancient History, Term 3' },
+  { id: 'republic', title: 'The Late Republic', sub: 'Ancient History, Term 4' },
+  { id: 'julio-claudian', title: 'The Julio-Claudians', sub: 'Ancient History, Term 5' },
+  { id: 'philosophy', title: 'Philosophy of Religion', sub: 'Religious Studies' },
+  { id: 'ethics', title: 'Religion and Ethics', sub: 'Religious Studies' },
+  { id: 'christian', title: 'Christian Thought', sub: 'Religious Studies' },
+];
+// Each person appears once, under the first group in this order that matches one of their tags.
+const seen = new Set<string>();
+const sections = groups.map((g) => {
+  const people = PEOPLE.filter((p) => !seen.has(p.id) && p.tags?.includes(g.id));
+  people.forEach((p) => seen.add(p.id));
+  return { ...g, people };
+});
+---
+<StudyLayout
+  title="Who’s Who"
+  eyebrow={`${PEOPLE.length} people across three subjects`}
+  lead="Every major figure in the course in a paragraph: who they were, what they did, and why the exam cares. People who appear in more than one subject are listed once, under the subject that meets them first, with all their subjects tagged."
+  current="people"
+>
+  <div class="wrap jump">
+    {sections.map((s) => <a href={`#${s.id}`}>{s.title}</a>)}
+  </div>
+  {sections.map((s) => (
+    <Section id={s.id} title={s.title} eyebrow={s.sub}>
+      <Bios people={s.people} />
+    </Section>
+  ))}
+</StudyLayout>
+
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-bottom: 1rem; }
+  .jump a { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); border: 1px solid var(--black-line); border-radius: 999px; padding: 0.45rem 0.8rem; }
+  .jump a:hover { color: var(--gold-bright); border-color: var(--gold); }
+</style>

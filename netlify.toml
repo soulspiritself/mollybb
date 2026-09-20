@@ -11,3 +11,9 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# /study is unlisted: tell crawlers not to index it even if they find the link.
+[[headers]]
+  for = "/study/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

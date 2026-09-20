@@ -1,0 +1,146 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import Table from '../../components/study/Table.astro';
+import { BOARDS, SESSION, MODULES, WEEKS, SCRIPTS } from '../../data/study/maths';
+import { MATHS_LINKS } from '../../data/study/resources';
+---
+<StudyLayout
+  title="Maths"
+  eyebrow="Functional Skills Mathematics Level 2 · aim: a safe pass"
+  lead="Thirty-one teaching weeks of thirty minutes a day, five days a week, every topic taught concrete first. First sitting in the week of 21 June 2027, a retake window in August or early September if needed. Nothing here aims higher than a pass; everything aims at the pass being safe."
+  current="maths"
+>
+  <Section title="What the exam actually is" intro="Functional Skills Level 2 is not GCSE. There is no algebra to solve and no trigonometry. The syllabus is 28 statements, and three quarters of the marks are for real-life problems: budgets, recipes, journeys, rooms to carpet, surveys to read. It is the maths of running a life, which a concrete thinker can do.">
+    <Table head={BOARDS.head} rows={BOARDS.rows} />
+    <div class="study-prose">
+      <p><strong>Plan for 70%.</strong> Pass marks are unofficial figures from tutoring providers; the boards set them per paper. Seventy percent is the margin that makes a bad day survivable.</p>
+      <p>Three things about the marking change how she is taught:</p>
+      <ol>
+        <li><strong>The calculator covers 75% of the marks.</strong> She does not need to do long division by hand for most of the paper. She needs to decide what to type, and type it correctly.</li>
+        <li><strong>There are marks for showing a check.</strong> Many questions say "show how you check your answer". A written estimate or inverse operation scores on its own.</li>
+        <li><strong>There are marks for explaining.</strong> "Is she right? Explain how you know." A sentence scores. She writes well; this is free money.</li>
+      </ol>
+      <p><strong>Grade:</strong> pass or fail only. A fail is not certificated and appears nowhere. A retake is allowed once results are back, each attempt paid for.</p>
+    </div>
+    <div class="study-callout"><strong>Sitting it from home.</strong> Book through a remote-invigilation provider: Pass Functional Skills (Open Awards or TQUK, about £160 to £200, results in one to three weeks, a bundle with a free resit), MME Exams (Open Awards or City and Guilds, one-to-one invigilation six days a week), or Intech Centre (City and Guilds, about £180). Book two weeks ahead. She needs a laptop with a webcam, a quiet room and a second device for the invigilator. <strong>Recommendation:</strong> sit Open Awards through Pass Functional Skills or MME, and practise mainly on Pearson past papers because there are far more of them and the content is identical.</div>
+  </Section>
+
+  <Section title="Why school maths failed, and what this does instead" intro="School teaches rule, symbols, twenty questions. For a learner who does not see what the symbols stand for, that is twenty failures. Every topic here reverses the order.">
+    <div class="study-prose">
+      <p><strong>Concrete, then picture, then number, then exam question.</strong></p>
+      <ol>
+        <li><strong>Concrete:</strong> real objects first. Coins, a measuring jug, a tape measure, a bar of chocolate, a bus timetable, a receipt. Her hands do the maths before her head does.</li>
+        <li><strong>Picture:</strong> draw it. A bar split into parts, a rectangle on squared paper, a number line, a table. The bar model does most of the work in this course.</li>
+        <li><strong>Number:</strong> now write the calculation the picture shows. The calculator does the arithmetic.</li>
+        <li><strong>Exam question:</strong> one real past-paper question on the same topic, done the same way: read, draw, calculate, check, answer in a sentence.</li>
+      </ol>
+      <p><strong>Six rules that are not negotiable:</strong></p>
+      <ul>
+        <li>Thirty minutes a day, five days a week, never longer. A session that overruns is stopped, not finished.</li>
+        <li>One idea per session. Never two.</li>
+        <li>One method per topic. If a video shows a different method, close the video.</li>
+        <li>No "why does this work" lectures. Understanding comes from the objects. If she asks why, show her again with the objects.</li>
+        <li>Every session ends on a question she can do. Confidence is the resource being managed.</li>
+        <li>Errors go in the error log (topic, mistake type, one line on next time), not in her self-image. Friday re-does three from the log.</li>
+      </ul>
+    </div>
+  </Section>
+
+  <Section title="The daily session" intro="Every day, thirty minutes, the same shape. Friday replaces the idea with the Friday check: five questions from the week plus three log re-dos, scored out of 8. Under 5 means Monday repeats the weakest topic. Monday's warm-up is ten minutes of review deck.">
+    <Table head={SESSION.head} rows={SESSION.rows} />
+    <div class="timer" id="timer">
+      <p class="eyebrow">Session timer</p>
+      <div class="timer__row">
+        <span class="timer__clock" id="timer-clock">30:00</span>
+        <button class="btn" id="timer-start" type="button">Start</button>
+        <button class="btn btn--ghost" id="timer-reset" type="button">Reset</button>
+      </div>
+      <p class="timer__phase" id="timer-phase">Warm-up: three quick ones from the review deck.</p>
+    </div>
+  </Section>
+
+  <Section title="Modules" intro="The 28 DfE statements grouped into twelve modules. Formulas are given in the exam for everything except the area of a triangle and of a circle, which she memorises as two sentences.">
+    <Table head={MODULES.head} rows={MODULES.rows} />
+  </Section>
+
+  <Section title="Week by week" intro="Week 1 is Monday 5 October 2026. Each row is four teaching sessions and a Friday check. Holiday weeks have no formal maths beyond a card game or shopping maths.">
+    <Table head={WEEKS.head} rows={WEEKS.rows} />
+    <div class="study-prose">
+      <p><strong>Decision gates.</strong> End of week 10: if the Phase 1 review scores under 50%, weeks 11 and 12 repeat fractions and percentages and everything else moves back a week; the data phase shrinks to four weeks (drop density and surface area, which are rare in the paper). Week 28: the exam booking gate, as in the table.</p>
+      <p><strong>After a fail:</strong> results come in one to three weeks with a topic breakdown. Six-week retake plan: two weeks on the two weakest modules, two weeks of mixed past papers, one mock, one rest week, retake in the last week of August or the first week of September 2027. Still within the twelve months.</p>
+    </div>
+  </Section>
+
+  <Section title="Teaching scripts for the hard topics" intro="These are the topics where abstract teaching fails. Do them exactly like this.">
+    <div class="scripts">
+      {SCRIPTS.map((s) => (
+        <article class="script"><h3 class="script__t">{s.t}</h3><p class="script__b">{s.b}</p></article>
+      ))}
+    </div>
+  </Section>
+
+  <Section title="Past papers and practice" intro="In the order to use them. Do not buy a tutoring course; this page is the course. Spend the money on a second exam attempt if needed.">
+    <div class="study-grid">
+      {MATHS_LINKS.map((r) => (
+        <a href={r.url} class="study-card" target="_blank" rel="noopener">
+          <h3 class="study-card__title">{r.title}</h3>
+          {r.note && <p class="study-card__body">{r.note}</p>}
+        </a>
+      ))}
+    </div>
+  </Section>
+
+  <Section title="What a passing week looks like">
+    <div class="study-prose">
+      <p>Monday 8 February 2027, 9:00. Ten minutes of review deck: a ratio card, a percentage card, a decimal ordering card, all answered on a whiteboard. Then squared paper and a real question: "Sam is putting a fence round a rectangular garden 8 m by 5 m." She draws it, walks round the edge with her finger, writes 8 + 5 + 8 + 5 = 26 m. "Fence panels are 2 m long and cost £24 each." 26 ÷ 2 = 13 panels, 13 × 24 on the calculator = £312. "Show a check": 13 × 25 = 325, close enough. Then one past-paper question on area, the same way. 9:28: one line in the log, "I can find a perimeter and use it to work out a cost." Done. Classical Civilisation at 9:45.</p>
+      <p>That is the whole method. Small, concrete, daily, finished on a success. Thirty-one weeks of it is enough for a pass.</p>
+    </div>
+  </Section>
+</StudyLayout>
+
+<script>
+  // 30-minute session timer with the four phases of the daily session.
+  const clock = document.getElementById('timer-clock');
+  const phaseEl = document.getElementById('timer-phase');
+  const startBtn = document.getElementById('timer-start') as HTMLButtonElement | null;
+  const resetBtn = document.getElementById('timer-reset');
+  if (clock && phaseEl && startBtn && resetBtn) {
+    const TOTAL = 30 * 60;
+    const phases: [number, string][] = [
+      [0, 'Warm-up: three quick ones from the review deck.'],
+      [5 * 60, 'Today’s idea: concrete, then picture, then number.'],
+      [18 * 60, 'Two exam questions, the four-step way: read, draw, calculate, check, answer.'],
+      [27 * 60, 'Log and card: one line, one index card.'],
+      [TOTAL, 'Done. Stop here, even if it is not finished.'],
+    ];
+    let elapsed = 0; let handle: number | null = null;
+    const render = () => {
+      const left = Math.max(0, TOTAL - elapsed);
+      clock.textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(left % 60).padStart(2, '0')}`;
+      let label = phases[0][1];
+      for (const [t, l] of phases) if (elapsed >= t) label = l;
+      phaseEl.textContent = label;
+    };
+    const tick = () => { elapsed += 1; render(); if (elapsed >= TOTAL && handle !== null) { clearInterval(handle); handle = null; startBtn.textContent = 'Start'; } };
+    startBtn.addEventListener('click', () => {
+      if (handle === null) { handle = window.setInterval(tick, 1000); startBtn.textContent = 'Pause'; }
+      else { clearInterval(handle); handle = null; startBtn.textContent = 'Resume'; }
+    });
+    resetBtn.addEventListener('click', () => { if (handle !== null) clearInterval(handle); handle = null; elapsed = 0; startBtn.textContent = 'Start'; render(); });
+    render();
+  }
+</script>
+
+<style>
+  .timer { margin-top: 1.5rem; padding: 1.5rem; border: 1px solid var(--black-line); border-radius: 14px; background: var(--black-soft); max-width: 560px; }
+  .timer__row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .timer__clock { font-family: var(--serif); font-size: 3rem; color: var(--gold-bright); letter-spacing: 0.04em; min-width: 5.5ch; }
+  .timer__phase { margin: 0.9rem 0 0; color: var(--text-muted); font-size: 0.95rem; }
+  .btn--ghost { border-color: var(--black-line); color: var(--text-muted); }
+  .btn--ghost:hover { background: var(--black-soft); color: var(--gold-bright); border-color: var(--gold); }
+  .scripts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .script { padding: 1.3rem 1.3rem 1.1rem; border: 1px solid var(--black-line); border-radius: 14px; }
+  .script__t { font-family: var(--serif); font-size: 1.35rem; color: var(--gold-bright); margin-bottom: 0.5rem; }
+  .script__b { color: var(--text-muted); font-size: 0.93rem; margin: 0; }
+</style>

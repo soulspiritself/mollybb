@@ -1,0 +1,50 @@
+---
+interface Props { current?: string }
+const { current = '' } = Astro.props;
+
+const items = [
+  { slug: 'index', href: '/study/', label: 'Overview' },
+  { slug: 'calendar', href: '/study/calendar/', label: 'Calendar' },
+  { slug: 'classics', href: '/study/classics/', label: 'Classical Civ' },
+  { slug: 'history', href: '/study/history/', label: 'Ancient History' },
+  { slug: 'rs', href: '/study/rs/', label: 'Religious Studies' },
+  { slug: 'maths', href: '/study/maths/', label: 'Maths' },
+  { slug: 'people', href: '/study/people/', label: 'Who’s Who' },
+  { slug: 'resources', href: '/study/resources/', label: 'Resources' },
+];
+---
+<nav class="snav" aria-label="Study">
+  <div class="wrap snav__inner">
+    {items.map((i) => (
+      <a href={i.href} class:list={['snav__link', { 'is-current': i.slug === current }]} aria-current={i.slug === current ? 'page' : undefined}>{i.label}</a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .snav {
+    border-bottom: 1px solid var(--black-line);
+    background: var(--black-soft);
+  }
+  .snav__inner {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-block: 0.4rem;
+  }
+  .snav__inner::-webkit-scrollbar { display: none; }
+  .snav__link {
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.55rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .snav__link:hover { color: var(--gold-bright); }
+  .snav__link.is-current { color: var(--gold-bright); border-color: var(--gold-deep); background: rgba(201,169,110,0.08); }
+</style>

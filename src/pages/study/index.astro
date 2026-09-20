@@ -1,0 +1,91 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import Table from '../../components/study/Table.astro';
+import ThisWeek from '../../components/study/ThisWeek.astro';
+import { TERMS, TIMETABLE } from '../../data/study/calendar';
+
+const subjects = [
+  { href: '/study/classics/', kicker: 'OCR H408', title: 'Classical Civilisation', body: 'The Odyssey and the Aeneid, then Democracy and the Athenians and Imperial Image. Three papers.', meta: '40% World of the Hero · 30% · 30%' },
+  { href: '/study/history/', kicker: 'OCR H407', title: 'Ancient History', body: 'Greeks and Persians 492 to 404, Periclean Athens, the fall of the Republic, the Julio-Claudians. Two papers.', meta: '40% of the marks are for using sources' },
+  { href: '/study/rs/', kicker: 'OCR H573', title: 'Religious Studies', body: 'Philosophy of Religion, Religion and Ethics, Developments in Christian Thought. Three papers, three essays each.', meta: '30 topics · 40-mark essays' },
+  { href: '/study/maths/', kicker: 'Functional Skills Level 2', title: 'Maths', body: 'Thirty minutes a day, concrete first, one method per topic. Exam in the week of 21 June 2027.', meta: 'Aim: a safe pass' },
+];
+
+const terms = {
+  head: ['Term', 'Dates', 'Weeks', 'Classical Civ', 'Ancient History', 'Religious Studies', 'Maths'],
+  rows: [
+    ['T1', '5 Oct to 18 Dec 2026', '1 to 10', 'Odyssey', 'Persian Wars 492 to 449', 'Plato and Aristotle; soul; arguments. Natural Law; Situation Ethics', 'Diagnostic, number, money'],
+    ['T2', '4 Jan to 26 Mar 2027', '11 to 21', 'Aeneid', 'Athenian empire and Peloponnesian War to 404', 'Religious experience; evil. Kant; utilitarianism; euthanasia; meta-ethics', 'Measures, shape, space'],
+    ['T3', '12 Apr to 16 Jul 2027', '22 to 34', 'Democracy and the Athenians', 'Athens c.460 to 399 (depth)', 'Augustine; afterlife; knowledge of God; Jesus. Business ethics. Nature of God', 'Data; mocks; <strong>exam w/c 21 Jun</strong>'],
+    ['T4', '6 Sep to 17 Dec 2027', '35 to 48', 'Imperial Image', 'Late Republic 88 to 31 (depth)', 'Religious language. Conscience; sexual ethics. Moral principles; Bonhoeffer', 'Done'],
+    ['T5', '4 Jan to 24 Mar 2028', '49 to 59', 'Mocks; Hero synoptic; past papers', 'Julio-Claudians 31 BC to AD 68', 'Pluralism; gender; secularism; liberation theology', ''],
+    ['T6', '10 Apr 2028 to exams', '60 onward', 'Revision', 'Revision', 'Revision', ''],
+  ],
+};
+---
+<StudyLayout
+  title="Study Plan 2026 to 2028"
+  eyebrow="Unlisted · for Molly and family"
+  lead="Three OCR A levels in May and June 2028, and Functional Skills Maths first, in June 2027. Two years, sixty-three teaching weeks, one page per subject."
+  current="index"
+>
+  <ThisWeek />
+
+  <Section title="The four subjects" intro="Each subject page has its exam format, the term-by-term plan, an introduction to every topic, the milestone essays, and a marking guide.">
+    <div class="study-grid">
+      {subjects.map((s) => (
+        <a href={s.href} class="study-card">
+          <p class="study-card__kicker">{s.kicker}</p>
+          <h3 class="study-card__title">{s.title}</h3>
+          <p class="study-card__body">{s.body}</p>
+          <p class="study-card__meta">{s.meta}</p>
+        </a>
+      ))}
+    </div>
+  </Section>
+
+  <Section title="The shape of the two years" intro="Year 1 carries the compulsory halves of each A level and the whole maths course. Year 2 carries the option components, a January mock series and a revision term. The options were chosen so the same ancient texts count for two exams: Democracy and the Athenians shares its sources with the Athens depth study, and Imperial Image shares its sources with the Julio-Claudians.">
+    <Table head={terms.head} rows={terms.rows} />
+    <p class="study-prose">The full week-by-week version, with holidays and every assessment date, is on the <a href="/study/calendar/">calendar</a>.</p>
+  </Section>
+
+  <Section title="The week" intro="About 22 hours in term time. Maths first every morning for thirty minutes. Friday morning is the fixed timed-assessment slot, rotating through the three A levels. The 15:00 slot is for set texts only, because reading the primary sources is most of the work.">
+    <Table head={TIMETABLE.head} rows={TIMETABLE.rows} />
+  </Section>
+
+  <Section title="Five principles">
+    <div class="study-prose">
+      <ul>
+        <li><strong>Primary texts first.</strong> In Classics and Ancient History the marks come from knowing the sources. Read the text before the textbook chapter, always.</li>
+        <li><strong>Every week ends with writing.</strong> Knowledge never written under time pressure does not turn into marks.</li>
+        <li><strong>Maths is small, daily and concrete.</strong> Thirty minutes, one idea, real objects, then one exam question. Never a two-hour catch-up.</li>
+        <li><strong>Overlap is deliberate.</strong> Meeting Thucydides 2.65 in Ancient History and again in Democracy and the Athenians in the same term is the plan working.</li>
+        <li><strong>Nothing is sacred.</strong> If a term is two weeks behind at half term, drop the least-weighted content, never the writing practice.</li>
+      </ul>
+    </div>
+  </Section>
+
+  <Section title="How assessment works at home" intro="Four layers, each with a fixed rhythm. Marked with OCR's own mark schemes and the level tables on each subject page, plus an external marker twice a year so the home marking stays honest.">
+    <Table head={['Layer', 'When', 'What', 'Marked by']} rows={[
+      ['Weekly timed piece', 'Friday 9:45', 'One exam-style question, rotating CC, AH, RS, so each subject is timed every three weeks', 'Dad, same day'],
+      ['Retrieval quiz', 'Alternate Fridays 15:00', 'Ten cards per subject from the Anki deck, five minutes each', 'Self-marked, score logged'],
+      ['Milestones M1 to M10', 'Roughly every half term, per subject', 'A full exam section or paper under timed conditions, real OCR questions', 'Dad; external marker after M2 and after the January mocks'],
+      ['Mock series', 'January and April 2028', 'All six A-level papers over two weeks', 'Dad, with OCR grade boundaries'],
+    ]} />
+    <div class="study-callout"><strong>Grades from marks.</strong> OCR publishes grade boundaries for every session and they move a few marks each year. As a working guide, an A is usually in the high 60s to low 70s percent of raw marks, a B in the high 50s to low 60s, a C around 50 and an E around 30.</div>
+  </Section>
+
+  <Section title="Logistics" intro="Book an exam centre in autumn 2027, enter by about 21 February 2028, and budget roughly £900 to £1,200 for the three A levels. The maths exam is booked separately, online, about two weeks before the chosen date.">
+    <div class="study-prose">
+      <ul>
+        <li><strong>Exam centre.</strong> Private candidates enter through an approved centre, not OCR directly. Use the <a href="https://www.jcq.org.uk/private-candidates/" target="_blank" rel="noopener">JCQ centre finder</a>. Contact three centres in September to October 2027 and confirm they take OCR H407, H408 and H573.</li>
+        <li><strong>Entry deadline.</strong> OCR's summer 2027 deadline is 21 February 2027, with late fees after; assume 21 February 2028 for these exams. Centres set earlier internal deadlines, often January.</li>
+        <li><strong>Fees.</strong> OCR board fee about £182 to £192 per subject (2026/27), plus a centre fee of typically £100 to £200 per subject.</li>
+        <li><strong>Access arrangements.</strong> Ask the centre about a dyscalculia assessment at first contact. Extra time needs evidence gathered months ahead.</li>
+        <li><strong>Maths exam.</strong> On demand, sat at home with remote invigilation through Pass Functional Skills, MME Exams or Intech Centre. About £160 to £200 per attempt. Details on the <a href="/study/maths/">maths page</a>.</li>
+        <li><strong>Week 1 download.</strong> Every OCR past paper, mark scheme and examiners' report for the three subjects, free from the OCR pages on the <a href="/study/resources/">resources page</a>.</li>
+      </ul>
+    </div>
+  </Section>
+</StudyLayout>

@@ -6,11 +6,14 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  /** Unlisted pages: no search indexing, no sitemap entry. */
+  noindex?: boolean;
 }
 
 const {
   title = 'Molly BB',
   description = 'Molly BB — a creative portfolio. Writing, image, and ideas.',
+  noindex = false,
 } = Astro.props;
 
 const siteTitle = title === 'Molly BB' ? title : `${title} — Molly BB`;
@@ -24,6 +27,7 @@ const ogImageUrl = new URL('/images/mollybb-logo.png', Astro.site).toString();
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{siteTitle}</title>
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   <link rel="canonical" href={canonicalUrl} />
 
   <meta property="og:type" content="website" />
@@ -40,7 +44,7 @@ const ogImageUrl = new URL('/images/mollybb-logo.png', Astro.site).toString();
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/images/mollybb-logo.png" />
-  <link rel="sitemap" href="/sitemap-index.xml" />
+  {!noindex && <link rel="sitemap" href="/sitemap-index.xml" />}
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

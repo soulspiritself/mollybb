@@ -1,0 +1,74 @@
+---
+/**
+ * "This week" banner. Server renders the full week list into a data attribute;
+ * a tiny client script picks the current week from today's date and highlights it,
+ * plus adds .is-now to any table row with a matching data-week.
+ */
+import { WEEKS } from '../../data/study/calendar';
+const payload = JSON.stringify(WEEKS.map((w) => ({ n: w.n, mon: w.mon, term: w.term, label: w.label, cc: w.cc, ah: w.ah, rs: w.rs, maths: w.maths, event: w.event })));
+---
+<div class="thisweek" id="thisweek" data-weeks={payload}>
+  <div class="wrap thisweek__inner">
+    <div class="thisweek__head">
+      <p class="eyebrow">This week</p>
+      <h2 class="thisweek__title" id="tw-title">Loading the calendar…</h2>
+      <p class="thisweek__sub" id="tw-sub"></p>
+    </div>
+    <div class="thisweek__grid" id="tw-grid" hidden>
+      <div><span class="thisweek__k">Classical Civ</span><span id="tw-cc"></span></div>
+      <div><span class="thisweek__k">Ancient History</span><span id="tw-ah"></span></div>
+      <div><span class="thisweek__k">Religious Studies</span><span id="tw-rs"></span></div>
+      <div><span class="thisweek__k">Maths</span><span id="tw-maths"></span></div>
+    </div>
+    <p class="thisweek__event" id="tw-event" hidden></p>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('thisweek');
+  if (root) {
+    const weeks = JSON.parse(root.dataset.weeks || '[]') as Array<{ n: number; mon: string; term: string; label?: string; cc: string; ah: string; rs: string; maths: string; event?: string }>;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(weeks[0].mon + 'T00:00:00');
+    let current: (typeof weeks)[number] | null = null;
+    let upcoming: (typeof weeks)[number] | null = null;
+    for (const w of weeks) {
+      const mon = new Date(w.mon + 'T00:00:00');
+      const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+      if (today >= mon && today <= sun) { current = w; break; }
+      if (mon > today && !upcoming) upcoming = w;
+    }
+    const title = document.getElementById('tw-title')!;
+    const sub = document.getElementById('tw-sub')!;
+    const grid = document.getElementById('tw-grid')!;
+    const ev = document.getElementById('tw-event')!;
+    const fmt = (iso: string) => new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const show = (w: (typeof weeks)[number], prefix: string) => {
+      title.textContent = `${prefix}${w.label ? w.label : 'Week ' + w.n}`;
+      sub.textContent = `${w.term} · week beginning ${fmt(w.mon)}`;
+      (document.getElementById('tw-cc')!).textContent = w.cc;
+      (document.getElementById('tw-ah')!).textContent = w.ah;
+      (document.getElementById('tw-rs')!).textContent = w.rs;
+      (document.getElementById('tw-maths')!).textContent = w.maths;
+      grid.hidden = false;
+      if (w.event) { ev.textContent = w.event; ev.hidden = false; }
+      document.querySelectorAll<HTMLElement>(`[data-week="${w.n}"]`).forEach((tr) => tr.classList.add('is-now'));
+    };
+    if (current) show(current, '');
+    else if (today < start) { title.textContent = 'Term starts Monday 5 October 2026'; sub.textContent = `First up: ${upcoming ? 'week 1' : ''}`; if (upcoming) show(upcoming, 'Next: '); }
+    else if (upcoming) show(upcoming, 'Holiday. Next: ');
+    else { title.textContent = 'Exam season'; sub.textContent = 'The taught course is complete. Timed questions daily until the papers.'; }
+  }
+</script>
+
+<style>
+  .thisweek { border-block: 1px solid var(--black-line); background: linear-gradient(180deg, rgba(201,169,110,0.07), rgba(201,169,110,0.02)); }
+  .thisweek__inner { padding-block: 2rem 2.25rem; }
+  .thisweek__title { font-size: clamp(1.6rem, 4vw, 2.4rem); color: var(--gold-bright); margin-bottom: 0.25rem; }
+  .thisweek__sub { color: var(--text-faint); font-size: 0.85rem; letter-spacing: 0.04em; margin: 0 0 1.25rem; }
+  .thisweek__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+  .thisweek__grid > div { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.9rem 1rem; border: 1px solid var(--black-line); border-radius: 12px; background: rgba(10,10,11,0.5); font-size: 0.92rem; color: var(--text); }
+  .thisweek__k { font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+  .thisweek__event { margin: 1rem 0 0; color: var(--gold-bright); font-family: var(--serif); font-size: 1.1rem; }
+</style>

@@ -1,0 +1,54 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import { OFFICIAL, TEXTS, TEXTBOOKS, MATHS_LINKS, APPS } from '../../data/study/resources';
+import type { Resource } from '../../data/study/types';
+
+const Card = (r: Resource) => r;
+const lists: { title: string; intro: string; items: Resource[] }[] = [
+  { title: 'Official: OCR, JCQ, DfE', intro: 'Specifications, past papers, mark schemes, examiners’ reports and the private-candidate route. Download every past paper and report in week 1.', items: OFFICIAL },
+  { title: 'Set texts and sources', intro: 'Buy the Penguin editions listed; they are the ones whose translations appear on the papers. Kline is free and matches the paper’s second version.', items: TEXTS },
+  { title: 'Textbooks', intro: 'Buy second hand where possible; the specifications have not changed since 2017, so older printings are fine.', items: TEXTBOOKS },
+  { title: 'Maths: past papers and practice', intro: 'In the order to use them.', items: MATHS_LINKS },
+  { title: 'Apps and reference sites', intro: 'The few that earn their place.', items: APPS },
+];
+---
+<StudyLayout
+  title="Resources"
+  eyebrow="Books, links, past papers, apps"
+  lead="Everything the plan refers to, in one place. Links were checked in September 2026."
+  current="resources"
+>
+  {lists.map((l) => (
+    <Section title={l.title} intro={l.intro}>
+      <div class="study-grid">
+        {l.items.map((r) => r.url ? (
+          <a href={r.url} class="study-card" target="_blank" rel="noopener">
+            <h3 class="study-card__title">{r.title}</h3>
+            {r.note && <p class="study-card__body">{r.note}</p>}
+            {r.isbn && <p class="study-card__meta">ISBN {r.isbn}</p>}
+          </a>
+        ) : (
+          <article class="study-card">
+            <h3 class="study-card__title">{r.title}</h3>
+            {r.note && <p class="study-card__body">{r.note}</p>}
+            {r.isbn && <p class="study-card__meta">ISBN {r.isbn}</p>}
+          </article>
+        ))}
+      </div>
+    </Section>
+  ))}
+
+  <Section title="The kit" intro="Physical things to have on the desk from week 1.">
+    <div class="study-prose">
+      <ul>
+        <li>A Casio fx-83GTX or fx-85GTX calculator. The same one every day from week 1.</li>
+        <li>Squared paper, ruler, protractor, compasses, a tape measure, kitchen scales, a measuring jug, real coins. The concrete kit for maths is not optional.</li>
+        <li>Index cards (or Anki) for the review deck and the quiz bank.</li>
+        <li>Three A4 ring binders, one per A level, with dividers per topic, for book sheets, source cards and topic sheets.</li>
+        <li>A wall timeline for each Ancient History period (546 to 404 BC; 88 BC to AD 68).</li>
+        <li>A printed copy of the OCR levels grids for each subject, kept with the marking pen.</li>
+      </ul>
+    </div>
+  </Section>
+</StudyLayout>

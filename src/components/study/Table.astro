@@ -1,0 +1,25 @@
+---
+/**
+ * Generic study table. `rows` is an array of arrays of strings (HTML allowed).
+ * A row may carry a leading marker object instead: { cls: 'is-now' | 'is-break', cells: [...] }.
+ */
+interface Row { cls?: string; cells: string[]; week?: number }
+interface Props { head: string[]; rows: (string[] | Row)[] }
+const { head, rows } = Astro.props;
+const norm = (r: string[] | Row): Row => (Array.isArray(r) ? { cells: r } : r);
+---
+<div class="study-table-wrap">
+  <table class="study-table">
+    <thead><tr>{head.map((h) => <th>{h}</th>)}</tr></thead>
+    <tbody>
+      {rows.map((r) => {
+        const row = norm(r);
+        return (
+          <tr class={row.cls} data-week={row.week}>
+            {row.cells.map((c) => <td set:html={c} />)}
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,17 @@
+---
+import type { Milestone } from '../../data/study/types';
+interface Props { items: Milestone[] }
+const { items } = Astro.props;
+---
+<div class="milestones">
+  {items.map((m) => (
+    <article class="milestone">
+      <div class="milestone__code">{m.code}</div>
+      <div>
+        <p class="milestone__when">Week {m.week} · {m.when} · {m.format}</p>
+        <p class="milestone__q">{m.question}</p>
+        {m.note && <p class="milestone__note">{m.note}</p>}
+      </div>
+    </article>
+  ))}
+</div>

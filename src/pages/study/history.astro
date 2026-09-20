@@ -1,0 +1,93 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import Section from '../../components/study/Section.astro';
+import Table from '../../components/study/Table.astro';
+import Milestones from '../../components/study/Milestones.astro';
+import Bios from '../../components/study/Bios.astro';
+import { EXAM, TOPICS, T1, T2, T3, T4, T5, MILESTONES } from '../../data/study/history';
+import { byTag } from '../../data/study/people';
+---
+<StudyLayout
+  title="Ancient History"
+  eyebrow="OCR H407 · two papers · no coursework"
+  lead="A source-handling subject wearing an essay costume. Forty percent of the whole A level is for using ancient sources critically, so an essay that argues brilliantly with no sources tops out at about half marks. Every paragraph names a source, states its claim, and says how far to trust it."
+  current="history"
+>
+  <Section title="The exam" intro="Two papers of 2h 30m and 98 marks, identical in layout. H407/12 Athens and the Greek World: period study (Greek and non-Greek states 492 to 404) plus the Athens depth study. H407/21 Republic and Empire: period study (Julio-Claudians) plus the Late Republic depth study. Recommended 1h 15m per section.">
+    <Table head={EXAM.head} rows={EXAM.rows} />
+    <div class="study-callout"><strong>Weightings across the A level:</strong> AO1 knowledge 22.5%, AO2 analysis and judgement 22.5%, AO3 use of ancient sources 40%, AO4 evaluation of modern interpretations 15%.</div>
+  </Section>
+
+  <Section title="The four studies">
+    <div class="study-grid">
+      {TOPICS.map((t) => (
+        <article class="study-card">
+          <p class="study-card__kicker">{t.weeks}</p>
+          <h3 class="study-card__title">{t.title}</h3>
+          <p class="study-card__body">{t.intro}</p>
+          {t.reading && <p class="study-card__meta"><strong>Sources:</strong> {t.reading}</p>}
+          {t.practice && <p class="study-card__meta"><strong>Practice:</strong> {t.practice}</p>}
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <Section title="The method" intro="Built around a source card for every prescribed author and a source log for every prescribed passage.">
+    <div class="study-prose">
+      <ul>
+        <li><strong>Source card</strong>, one per author, kept for two years: who they were; when they wrote relative to the events; what they could know (eyewitness, oral tradition, archive, earlier historians); what they wanted (purpose, audience, genre); known biases; two examples where they are demonstrably reliable and two where they are not. Sixteen authors: Herodotus, Thucydides, Xenophon, Plutarch, Aristotle, Aristophanes, Plato, the Old Oligarch, Suetonius, Tacitus, Dio, Velleius, Cicero, Sallust, Appian, Caesar.</li>
+        <li><strong>Source log</strong>, a running table: passage; the event it describes; the claim it makes; the reason to trust or doubt it in this instance; which essay themes it serves. This table is the revision document for the whole course.</li>
+        <li><strong>The AO3 sentence</strong>, drilled from week 2. Every use of a source has three parts: claim, reliability, judgement. "Thucydides (1.23) says the truest cause of the war was Spartan fear of Athenian growth; as an Athenian general writing after the defeat he had reason to present the war as inevitable, but his account of the Pentecontaetia gives the pattern of growth that makes the claim plausible."</li>
+        <li><strong>The AO4 method</strong> for question 3: state the interpretation in one sentence; quote the ancient evidence that supports it; quote the evidence that complicates it; judge how convincing it is and why the historian might hold that view. She does not need to know the historian. She needs to know the sources.</li>
+      </ul>
+    </div>
+  </Section>
+
+  <Section title="Term 1: the Persian Wars, 492 to 449" intro="Weeks 1 to 10. Period study, part 1.">
+    <Table head={T1.head} rows={T1.rows} />
+  </Section>
+  <Section title="Term 2: empire and war to 404" intro="Weeks 11 to 21. Period study, part 2.">
+    <Table head={T2.head} rows={T2.rows} />
+  </Section>
+  <Section title="Term 3: the Culture and Politics of Athens, c.460 to 399" intro="Weeks 22 to 34. Depth study. Coordinate with Classical Civ, which covers Democracy and the Athenians this term; read the overlapping texts here first.">
+    <Table head={T3.head} rows={T3.rows} />
+  </Section>
+  <Section title="Term 4: the Breakdown of the Late Republic, 88 to 31" intro="Weeks 35 to 48. Depth study.">
+    <Table head={T4.head} rows={T4.rows} />
+  </Section>
+  <Section title="Term 5: the Julio-Claudian Emperors, 31 BC to AD 68" intro="Weeks 49 to 59. Period study. Much of the Augustus material repeats Imperial Image; move fast.">
+    <Table head={T5.head} rows={T5.rows} />
+  </Section>
+  <Section title="Term 6: revision">
+    <div class="study-prose">
+      <p>Second mocks in the week of 24 April 2028, both papers in full. Then each week one 30-mark, one 36-mark, one 20-mark AO4 and one 12-mark question, rotating between the four studies so each is visited every two weeks. Final fortnight: source cards and source log only.</p>
+    </div>
+  </Section>
+
+  <Section title="Milestones">
+    <Milestones items={MILESTONES} />
+  </Section>
+
+  <Section title="Marking guide" intro="Use the OCR mark schemes; each question has its own levels grid. Be strict about two things.">
+    <div class="study-prose">
+      <ol>
+        <li><strong>AO3 counts as much as everything else combined.</strong> For the 30- and 36-mark essays, ask of each paragraph: is a source named; is its claim stated; is its reliability assessed for this claim; is a judgement reached. A paragraph missing any one of these cannot sit in the top two levels for AO3.</li>
+        <li><strong>The 12-mark utility question is not a summary.</strong> It says what the source can tell us about the specific question, why it can be trusted for that (authorship, date, access, purpose), and what it cannot tell us.</li>
+      </ol>
+      <p><strong>Failure points from examiners' reports:</strong> a narrative with sources bolted on at the end; treating "Suetonius says" as proof; the same generic reliability comment ("Tacitus was biased against emperors") regardless of passage; ignoring the "how far" and writing a one-sided answer; in Q3, arguing with the historian without quoting any ancient evidence.</p>
+    </div>
+  </Section>
+
+  <Section title="Who's who: Greeks and Persians, 492 to 404">
+    <Bios people={byTag('greek-history')} />
+  </Section>
+  <Section title="Who's who: Athens, c.460 to 399">
+    <Bios people={byTag('athens').filter((p) => !p.tags?.includes('greek-history'))} />
+  </Section>
+  <Section title="Who's who: the Late Republic">
+    <Bios people={byTag('republic')} />
+  </Section>
+  <Section title="Who's who: the Julio-Claudians">
+    <Bios people={byTag('julio-claudian').filter((p) => !p.tags?.includes('republic'))} />
+  </Section>
+</StudyLayout>
