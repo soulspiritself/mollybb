@@ -64,6 +64,20 @@ src/data/study/                      ← ALL the content lives here, edit these:
 src/pages/study/                     ← index, calendar, classics, history, rs, maths, people, resources
 ```
 
+### /study/today (the command centre)
+
+`src/pages/study/today.astro` is a daily planner. `src/data/study/planner.ts` generates each day's tasks in the browser from the week tables (calendar, subject term tables, RS essays, maths weeks) and attaches "where to find it" resources per term. It also builds `TESTS`, the list of every milestone, mock and maths check with a date.
+
+Ticks, marks and action points are stored as `{ [id]: { d, at, s, n } }`:
+- locally in `localStorage` (`study.progress.v1`), always;
+- and, once a device has entered the family PIN, in Netlify Blobs through `netlify/functions/progress.mts` (`GET`/`PUT /api/progress`, `Authorization: Bearer <PIN>`). Merge is last-write-wins per task.
+
+The PIN is the Netlify env var `STUDY_PIN` (`netlify env:get STUDY_PIN` to read it, `netlify env:set STUDY_PIN NEWVALUE` then redeploy to change it). Anyone with the link plus the PIN can read and write ticks; there is nothing else in the store.
+
+Task ids are `YYYY-MM-DD:slot` (slots: maths, cc-am, cc-pm, ah-am, ah-pm, rs-am, rs-pm, friday, read) and `test:<subject>-<code>` for tests, so re-generating the plan keeps existing ticks as long as dates and codes do not change.
+
+Local testing with the function: `netlify dev --port 8888` (uses a local Blobs sandbox, not production data).
+
 The "This week" banner and the highlighted calendar row are computed in the browser from today's date and `calendar.ts`, so nothing needs updating week to week. To change what a week says, edit that week's row in `calendar.ts` and redeploy. The source markdown the plan was written from is in `~/Documents/Claude/study-plan-2026-28/`.
 
 ## Deploy (Netlify)

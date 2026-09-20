@@ -1,0 +1,297 @@
+---
+import StudyLayout from '../../layouts/StudyLayout.astro';
+import { TESTS } from '../../data/study/planner';
+const testsJson = JSON.stringify(TESTS);
+---
+<StudyLayout
+  title="Today"
+  eyebrow="Command centre"
+  lead="What to do today, where to find it, and a tick when it is done. Ticks and scores save on this device at once and sync to the family store when connected, so everyone sees the same page."
+  current="today"
+>
+  <div class="wrap cmd" id="cmd" data-tests={testsJson}>
+    <!-- Sync bar -->
+    <div class="cmd__sync" id="sync">
+      <span class="cmd__dot" id="sync-dot" aria-hidden="true"></span>
+      <span id="sync-text">Saving on this device only</span>
+      <button class="cmd__link" id="sync-btn" type="button">Connect to the family store</button>
+    </div>
+
+    <!-- Date nav -->
+    <div class="cmd__nav">
+      <button class="btn btn--ghost cmd__navbtn" id="prev" type="button" aria-label="Previous day">&larr;</button>
+      <div class="cmd__date">
+        <h2 class="cmd__day" id="day-title">Loading…</h2>
+        <p class="cmd__sub" id="day-sub"></p>
+      </div>
+      <button class="btn btn--ghost cmd__navbtn" id="next" type="button" aria-label="Next day">&rarr;</button>
+      <div class="cmd__jump">
+        <button class="btn" id="today-btn" type="button">Today</button>
+        <input type="date" id="date-input" class="cmd__input" aria-label="Jump to a date" />
+      </div>
+    </div>
+
+    <!-- Week strip -->
+    <div class="cmd__week" id="week-strip"></div>
+
+    <!-- View tabs -->
+    <div class="cmd__tabs" role="tablist">
+      <button class="cmd__tab is-on" data-view="day" role="tab" type="button">The day</button>
+      <button class="cmd__tab" data-view="tests" role="tab" type="button">Tests and scores</button>
+    </div>
+
+    <!-- Day view -->
+    <section id="view-day">
+      <div class="cmd__progress"><div class="cmd__bar" id="bar"></div><span class="cmd__count" id="count"></span></div>
+      <div class="cmd__event" id="event" hidden></div>
+      <div class="tasks" id="tasks"></div>
+      <div class="upcoming" id="upcoming"></div>
+    </section>
+
+    <!-- Tests view -->
+    <section id="view-tests" hidden>
+      <p class="study-section__intro">Every milestone, mock and maths check across the two years, in date order. Enter the mark as it was given (for example 17/20 or 62%) and one action point. This is the progress tracker.</p>
+      <div class="tests" id="tests"></div>
+    </section>
+  </div>
+</StudyLayout>
+
+<script>
+  import { buildDay, iso, addDays, dayName, weekFor, fromIso, type Task, type TestItem } from '../../data/study/planner';
+
+  type Entry = { d: number; at: number; s?: string; n?: string };
+  type State = Record<string, Entry>;
+  const KEY = 'study.progress.v1';
+  const PIN_KEY = 'study.pin';
+  const root = document.getElementById('cmd')!;
+  const TESTS: TestItem[] = JSON.parse(root.dataset.tests || '[]');
+
+  // ---------- state ----------
+  const load = (): State => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+  let state: State = load();
+  const merge = (a: State, b: State): State => { const o = { ...a }; for (const [k, v] of Object.entries(b)) if (v && typeof v.at === 'number' && (!o[k] || v.at >= o[k].at)) o[k] = v; return o; };
+  const get = (id: string) => state[id];
+  const set = (id: string, patch: Partial<Entry>) => { const cur = state[id] || { d: 0, at: 0 }; state[id] = { ...cur, ...patch, at: Date.now() }; persist(); schedulePush(); };
+
+  // ---------- sync ----------
+  const dot = document.getElementById('sync-dot')!; const txt = document.getElementById('sync-text')!; const btn = document.getElementById('sync-btn')!;
+  const pin = () => { try { return localStorage.getItem(PIN_KEY) || ''; } catch { return ''; } };
+  const status = (kind: 'local' | 'ok' | 'busy' | 'err', msg: string) => { dot.dataset.kind = kind; txt.textContent = msg; btn.textContent = pin() ? 'Change PIN' : 'Connect to the family store'; };
+  const api = async (method: 'GET' | 'PUT', body?: State) => {
+    const res = await fetch('/api/progress', { method, headers: { 'Authorization': `Bearer ${pin()}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    if (res.status === 401) throw new Error('wrong-pin');
+    if (!res.ok) throw new Error(`http-${res.status}`);
+    return (await res.json()) as State;
+  };
+  let pushTimer: number | null = null;
+  const schedulePush = () => { if (!pin()) return; if (pushTimer) clearTimeout(pushTimer); pushTimer = window.setTimeout(push, 800); };
+  const push = async () => {
+    if (!pin()) return; status('busy', 'Syncing…');
+    try { const merged = await api('PUT', state); state = merge(state, merged); persist(); status('ok', 'Synced with the family store'); render(); }
+    catch (e) { status('err', (e as Error).message === 'wrong-pin' ? 'PIN not accepted. Saving on this device only.' : 'Offline. Saved on this device; will sync later.'); }
+  };
+  const pull = async () => {
+    if (!pin()) { status('local', 'Saving on this device only'); return; }
+    status('busy', 'Syncing…');
+    try { const remote = await api('GET'); state = merge(state, remote); persist(); await api('PUT', state); status('ok', 'Synced with the family store'); }
+    catch (e) { status('err', (e as Error).message === 'wrong-pin' ? 'PIN not accepted. Saving on this device only.' : 'Offline. Saved on this device; will sync later.'); }
+  };
+  btn.addEventListener('click', async () => {
+    const v = window.prompt('Family PIN for the study store (ask Dad):', '');
+    if (v === null) return;
+    try { localStorage.setItem(PIN_KEY, v.trim()); } catch {}
+    await pull(); render();
+  });
+
+  // ---------- navigation ----------
+  const todayIso = () => iso(new Date());
+  const param = new URLSearchParams(location.search).get('d');
+  let current = param && /^\d{4}-\d{2}-\d{2}$/.test(param) ? param : todayIso();
+  const go = (d: string) => { current = d; history.replaceState(null, '', `?d=${d}`); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  document.getElementById('prev')!.addEventListener('click', () => go(addDays(current, -1)));
+  document.getElementById('next')!.addEventListener('click', () => go(addDays(current, 1)));
+  document.getElementById('today-btn')!.addEventListener('click', () => go(todayIso()));
+  const dateInput = document.getElementById('date-input') as HTMLInputElement;
+  dateInput.addEventListener('change', () => { if (dateInput.value) go(dateInput.value); });
+  document.querySelectorAll<HTMLButtonElement>('.cmd__tab').forEach((t) => t.addEventListener('click', () => {
+    document.querySelectorAll('.cmd__tab').forEach((x) => x.classList.toggle('is-on', x === t));
+    document.getElementById('view-day')!.hidden = t.dataset.view !== 'day';
+    document.getElementById('view-tests')!.hidden = t.dataset.view !== 'tests';
+  }));
+
+  // ---------- rendering ----------
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  const longDate = (d: string) => fromIso(d).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const shortDate = (d: string) => fromIso(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const subjClass = (s: string) => 'subj-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
+
+  const resHtml = (t: Task) => !t.res.length ? '' : `<ul class="task__res">${t.res.map((r) => r.url
+    ? `<li><span class="task__kind">${r.kind === 'book' ? 'Book' : 'Online'}</span><a href="${r.url}" target="_blank" rel="noopener">${esc(r.label)}</a>${r.note ? ` <span class="task__rnote">${esc(r.note)}</span>` : ''}</li>`
+    : `<li><span class="task__kind">${r.kind === 'book' ? 'Book' : r.kind === 'notes' ? 'Notes' : 'Online'}</span>${esc(r.label)}${r.note ? ` <span class="task__rnote">${esc(r.note)}</span>` : ''}</li>`).join('')}</ul>`;
+
+  const taskHtml = (t: Task) => {
+    const e = get(t.id); const done = !!e?.d;
+    return `<article class="task ${subjClass(t.subject)} ${done ? 'is-done' : ''}" data-id="${t.id}">
+      <label class="task__tick"><input type="checkbox" data-tick="${t.id}" ${done ? 'checked' : ''} aria-label="Done: ${esc(t.title)}" /><span></span></label>
+      <div class="task__body">
+        <p class="task__meta"><span class="task__time">${t.time}</span><span class="task__subj">${t.subject}</span>${t.code ? `<span class="task__code">${esc(t.code)}</span>` : ''}</p>
+        <h3 class="task__title">${esc(t.title)}</h3>
+        ${t.detail ? `<p class="task__detail">${esc(t.detail)}</p>` : ''}
+        ${resHtml(t)}
+        ${t.test ? `<div class="task__score"><label>Mark <input type="text" data-score="${t.id}" value="${esc(e?.s || '')}" placeholder="e.g. 17/20" /></label><label class="task__note">Action point <input type="text" data-note="${t.id}" value="${esc(e?.n || '')}" placeholder="one thing to do next time" /></label></div>` : ''}
+        ${done && e?.at ? `<p class="task__done">Done ${new Date(e.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</p>` : ''}
+      </div>
+    </article>`;
+  };
+
+  const renderWeekStrip = (d: string) => {
+    const strip = document.getElementById('week-strip')!;
+    const w = weekFor(d);
+    if (!w) { strip.innerHTML = ''; return; }
+    strip.innerHTML = [0, 1, 2, 3, 4].map((i) => {
+      const day = addDays(w.mon, i); const plan = buildDay(day);
+      const total = plan.tasks.length; const done = plan.tasks.filter((t) => get(t.id)?.d).length;
+      return `<button type="button" class="wk ${day === d ? 'is-on' : ''} ${total && done === total ? 'is-complete' : ''}" data-go="${day}"><span class="wk__d">${dayName(i).slice(0, 3)}</span><span class="wk__n">${shortDate(day)}</span><span class="wk__c">${total ? `${done}/${total}` : '—'}</span></button>`;
+    }).join('');
+    strip.querySelectorAll<HTMLButtonElement>('[data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go!)));
+  };
+
+  const renderDay = () => {
+    const plan = buildDay(current);
+    const title = document.getElementById('day-title')!; const sub = document.getElementById('day-sub')!;
+    const tasks = document.getElementById('tasks')!; const ev = document.getElementById('event')!;
+    const bar = document.getElementById('bar')!; const count = document.getElementById('count')!;
+    dateInput.value = current;
+    title.textContent = longDate(current);
+    if (plan.kind === 'school' && plan.week) sub.textContent = `${plan.week.term} · Week ${plan.week.n}${plan.week.label ? ' · ' + plan.week.label : ''}`;
+    else if (plan.kind === 'weekend') sub.textContent = `Weekend. Week ${plan.week?.n}. Free, unless it is the four weeks before an exam series.`;
+    else if (plan.kind === 'break') sub.textContent = `${plan.breakLabel}. ${plan.breakNote || 'No formal study.'}`;
+    else if (plan.kind === 'before') sub.textContent = 'Before the course starts. Week 1 begins Monday 5 October 2026.';
+    else sub.textContent = 'Exam season. Timed single questions daily; final fortnight is notes only.';
+
+    if (plan.kind === 'school' && plan.week?.event) { ev.hidden = false; ev.textContent = plan.week.event; } else ev.hidden = true;
+
+    if (!plan.tasks.length) {
+      tasks.innerHTML = `<p class="cmd__empty">${plan.kind === 'weekend' ? 'Nothing scheduled. Read something for pleasure.' : plan.kind === 'break' ? (plan.breakNote || 'Nothing scheduled.') : 'Nothing scheduled.'}</p>`;
+      bar.style.width = '0%'; count.textContent = '';
+    } else {
+      tasks.innerHTML = plan.tasks.map(taskHtml).join('');
+      const done = plan.tasks.filter((t) => get(t.id)?.d).length;
+      bar.style.width = `${Math.round((done / plan.tasks.length) * 100)}%`;
+      count.textContent = `${done} of ${plan.tasks.length} done`;
+    }
+    // Upcoming tests
+    const up = TESTS.filter((x) => x.date >= current).slice(0, 4);
+    document.getElementById('upcoming')!.innerHTML = up.length ? `<p class="eyebrow">Coming up</p><ul class="up">${up.map((x) => `<li><button type="button" class="cmd__link" data-go="${x.date}">${shortDate(x.date)}</button> <span class="up__s">${x.subject}</span> ${esc(x.code)}: ${esc(x.title)}${get(x.id)?.s ? ` <span class="up__score">${esc(get(x.id)!.s!)}</span>` : ''}</li>`).join('')}</ul>` : '';
+    document.querySelectorAll<HTMLButtonElement>('#upcoming [data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go!)));
+    renderWeekStrip(current);
+    bind(tasks);
+  };
+
+  const renderTests = () => {
+    const el = document.getElementById('tests')!;
+    const today = todayIso();
+    el.innerHTML = `<div class="study-table-wrap"><table class="study-table tests__t"><thead><tr><th>Date</th><th>Subject</th><th>Test</th><th>Done</th><th>Mark</th><th>Action point</th></tr></thead><tbody>${TESTS.map((x) => {
+      const e = get(x.id); const past = x.date < today;
+      return `<tr class="${e?.d ? 'is-done' : past ? 'is-missed' : ''} ${x.date === current ? 'is-now' : ''}"><td><button type="button" class="cmd__link" data-go="${x.date}">${shortDate(x.date)} ${fromIso(x.date).getFullYear()}</button></td><td>${x.subject}</td><td><strong>${esc(x.code)}</strong> ${esc(x.title)}<br><span class="tests__f">${esc(x.format)}</span></td><td><input type="checkbox" data-tick="${x.id}" ${e?.d ? 'checked' : ''} aria-label="Done" /></td><td><input type="text" class="tests__in" data-score="${x.id}" value="${esc(e?.s || '')}" placeholder="17/20" /></td><td><input type="text" class="tests__in tests__in--wide" data-note="${x.id}" value="${esc(e?.n || '')}" placeholder="one thing" /></td></tr>`;
+    }).join('')}</tbody></table></div>`;
+    el.querySelectorAll<HTMLButtonElement>('[data-go]').forEach((b) => b.addEventListener('click', () => { go(b.dataset.go!); (document.querySelector('.cmd__tab[data-view="day"]') as HTMLButtonElement).click(); }));
+    bind(el);
+  };
+
+  const bind = (scope: HTMLElement) => {
+    scope.querySelectorAll<HTMLInputElement>('[data-tick]').forEach((c) => c.addEventListener('change', () => { set(c.dataset.tick!, { d: c.checked ? 1 : 0 }); render(); }));
+    scope.querySelectorAll<HTMLInputElement>('[data-score]').forEach((i) => i.addEventListener('change', () => set(i.dataset.score!, { s: i.value.trim() })));
+    scope.querySelectorAll<HTMLInputElement>('[data-note]').forEach((i) => i.addEventListener('change', () => set(i.dataset.note!, { n: i.value.trim() })));
+  };
+
+  const render = () => { renderDay(); renderTests(); };
+  render();
+  pull().then(render);
+</script>
+
+<style is:global>
+  .cmd { padding-bottom: 2rem; }
+  .cmd__sync { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-faint); margin-bottom: 1.5rem; }
+  .cmd__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+  .cmd__dot[data-kind="ok"] { background: #7fbf7f; }
+  .cmd__dot[data-kind="busy"] { background: var(--gold); }
+  .cmd__dot[data-kind="err"] { background: #c86b6b; }
+  .cmd__link { background: none; border: 0; padding: 0; color: var(--gold-bright); font: inherit; cursor: pointer; letter-spacing: inherit; }
+  .cmd__link:hover { color: var(--gold); text-decoration: underline; }
+
+  .cmd__nav { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "prev date next" "jump jump jump"; gap: 0.75rem 1rem; align-items: center; margin-bottom: 1.25rem; }
+  .cmd__navbtn { grid-area: auto; padding: 0.6rem 0.9rem; }
+  #prev { grid-area: prev; } #next { grid-area: next; }
+  .cmd__date { grid-area: date; text-align: center; }
+  .cmd__day { font-size: clamp(1.5rem, 4vw, 2.3rem); color: var(--text); }
+  .cmd__sub { margin: 0.25rem 0 0; color: var(--text-faint); font-size: 0.85rem; letter-spacing: 0.04em; }
+  .cmd__jump { grid-area: jump; display: flex; gap: 0.75rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .cmd__input { background: var(--black-soft); border: 1px solid var(--black-line); color: var(--text); border-radius: 999px; padding: 0.6rem 1rem; font: inherit; font-size: 0.85rem; color-scheme: dark; }
+  .btn--ghost { border-color: var(--black-line); color: var(--text-muted); }
+  .btn--ghost:hover { background: var(--black-soft); color: var(--gold-bright); border-color: var(--gold); }
+
+  .cmd__week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 1.25rem; }
+  .wk { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; padding: 0.6rem 0.25rem; border: 1px solid var(--black-line); border-radius: 12px; background: transparent; color: var(--text-muted); cursor: pointer; font: inherit; }
+  .wk:hover { border-color: var(--gold-deep); }
+  .wk.is-on { border-color: var(--gold); color: var(--gold-bright); background: rgba(201,169,110,0.08); }
+  .wk.is-complete .wk__c { color: #7fbf7f; }
+  .wk__d { font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; }
+  .wk__n { font-family: var(--serif); font-size: 1.05rem; color: var(--text); }
+  .wk__c { font-size: 0.72rem; color: var(--text-faint); }
+
+  .cmd__tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--black-line); margin-bottom: 1.25rem; }
+  .cmd__tab { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--text-muted); font: inherit; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; padding: 0.7rem 0.9rem; cursor: pointer; margin-bottom: -1px; }
+  .cmd__tab.is-on { color: var(--gold-bright); border-bottom-color: var(--gold); }
+
+  .cmd__progress { position: relative; height: 6px; background: var(--black-soft); border-radius: 999px; margin: 0 0 2rem; }
+  .cmd__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--gold-deep), var(--gold-bright)); border-radius: 999px; transition: width 0.4s ease; }
+  .cmd__count { position: absolute; right: 0; top: 10px; font-size: 0.72rem; color: var(--text-faint); letter-spacing: 0.08em; }
+  .cmd__event { margin: 0 0 1rem; padding: 0.8rem 1rem; border-left: 2px solid var(--gold); background: var(--black-soft); border-radius: 0 10px 10px 0; color: var(--gold-bright); font-family: var(--serif); font-size: 1.05rem; }
+  .cmd__empty { color: var(--text-muted); font-family: var(--serif); font-size: 1.2rem; padding: 2rem 0; }
+
+  .tasks { display: grid; gap: 0.85rem; }
+  .task { display: grid; grid-template-columns: 2.25rem 1fr; gap: 0.9rem; padding: 1.1rem 1.2rem 1rem 1rem; border: 1px solid var(--black-line); border-radius: 14px; background: linear-gradient(180deg, rgba(201,169,110,0.04), transparent); transition: opacity 0.25s ease, border-color 0.25s ease; }
+  .task.is-done { opacity: 0.55; }
+  .task.is-done .task__title { text-decoration: line-through; text-decoration-color: var(--gold-deep); }
+  .task__tick { display: flex; align-items: flex-start; padding-top: 0.2rem; cursor: pointer; }
+  .task__tick input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .task__tick span { width: 1.6rem; height: 1.6rem; border: 1px solid var(--gold-deep); border-radius: 8px; display: inline-block; position: relative; transition: background 0.2s ease, border-color 0.2s ease; }
+  .task__tick input:checked + span { background: var(--gold); border-color: var(--gold); }
+  .task__tick input:checked + span::after { content: ""; position: absolute; left: 0.5rem; top: 0.22rem; width: 0.4rem; height: 0.8rem; border: solid var(--black); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .task__tick input:focus-visible + span { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+  .task__meta { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: baseline; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.35rem; }
+  .task__subj { color: var(--gold); }
+  .task__code { color: var(--gold-bright); border: 1px solid var(--gold-deep); border-radius: 999px; padding: 0.1rem 0.5rem; letter-spacing: 0.12em; }
+  .task__title { font-family: var(--serif); font-size: 1.3rem; color: var(--text); margin-bottom: 0.35rem; line-height: 1.25; }
+  .task__detail { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 0.6rem; }
+  .task__res { list-style: none; padding: 0; margin: 0.4rem 0 0; display: grid; gap: 0.25rem; font-size: 0.85rem; color: var(--text-muted); }
+  .task__res li { display: flex; gap: 0.5rem; align-items: baseline; }
+  .task__kind { flex: 0 0 auto; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-deep); min-width: 3.4rem; }
+  .task__rnote { color: var(--text-faint); }
+  .task__score { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.8rem; font-size: 0.75rem; color: var(--text-faint); letter-spacing: 0.08em; text-transform: uppercase; }
+  .task__score label { display: flex; flex-direction: column; gap: 0.25rem; }
+  .task__score input, .tests__in { background: var(--black); border: 1px solid var(--black-line); color: var(--text); border-radius: 8px; padding: 0.45rem 0.6rem; font: inherit; font-size: 0.9rem; letter-spacing: 0; text-transform: none; min-width: 7rem; }
+  .task__note input { min-width: 16rem; }
+  .task__score input:focus, .tests__in:focus { outline: none; border-color: var(--gold); }
+  .task__done { margin: 0.6rem 0 0; font-size: 0.72rem; color: var(--gold-deep); letter-spacing: 0.08em; }
+
+  .upcoming { margin-top: 2.5rem; }
+  .up { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; font-size: 0.9rem; color: var(--text-muted); }
+  .up__s { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin: 0 0.3rem; }
+  .up__score { color: var(--gold-bright); font-weight: 600; }
+
+  .tests__t td { vertical-align: middle; }
+  .tests__t tr.is-done td { opacity: 0.7; }
+  .tests__t tr.is-missed td:first-child { color: #c86b6b; }
+  .tests__f { font-size: 0.75rem; color: var(--text-faint); }
+  .tests__in--wide { min-width: 12rem; }
+
+  @media (max-width: 600px) {
+    .cmd__week { grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }
+    .wk__n { font-size: 0.9rem; }
+    .task { grid-template-columns: 2rem 1fr; padding: 0.9rem 0.9rem 0.9rem 0.75rem; }
+    .task__note input { min-width: 100%; }
+  }
+</style>

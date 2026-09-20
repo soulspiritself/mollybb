@@ -21,6 +21,7 @@ const payload = JSON.stringify(WEEKS.map((w) => ({ n: w.n, mon: w.mon, term: w.t
       <div><span class="thisweek__k">Maths</span><span id="tw-maths"></span></div>
     </div>
     <p class="thisweek__event" id="tw-event" hidden></p>
+    <p class="thisweek__cta"><a href="/study/today/" class="btn">Open today's plan</a></p>
   </div>
 </div>
 
@@ -71,4 +72,5 @@ const payload = JSON.stringify(WEEKS.map((w) => ({ n: w.n, mon: w.mon, term: w.t
   .thisweek__grid > div { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.9rem 1rem; border: 1px solid var(--black-line); border-radius: 12px; background: rgba(10,10,11,0.5); font-size: 0.92rem; color: var(--text); }
   .thisweek__k { font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
   .thisweek__event { margin: 1rem 0 0; color: var(--gold-bright); font-family: var(--serif); font-size: 1.1rem; }
+  .thisweek__cta { margin: 1.25rem 0 0; }
 </style>

@@ -55,12 +55,12 @@ export const WEEKS: Week[] = [
   { n: 47, mon: '2027-12-06', term: 'T4', cc: 'Review by theme. CC M8: full H408/22 paper, 1h 45m.', ah: 'Why the Republic fell: theme review. Eight essay plans.', rs: 'Review; revision cards for all 20 topics.', maths: '', friday: 'CC M8: full option paper', event: 'CC M8.' },
   { n: 48, mon: '2027-12-13', term: 'T4', label: 'Mock preparation', cc: 'Revision cards for all three components.', ah: 'Mock preparation.', rs: 'Mock preparation.', maths: '', event: 'Christmas break is mock revision.' },
   // ---------- T5 ----------
-  { n: 49, mon: '2028-01-04', term: 'T5', label: 'Mock series, week 1', cc: 'Mon H408/11 World of the Hero (2h 30m). Thu H408/34 Democracy (1h 45m).', ah: 'Wed H407/12 Greek paper (2h 30m).', rs: 'Tue H573/01 Philosophy (2h).', maths: '', event: 'Mock papers Mon to Thu; Friday rest.' },
-  { n: 50, mon: '2028-01-11', term: 'T5', label: 'Mock series, week 2', cc: 'Wed H408/22 Imperial Image (1h 45m).', ah: 'Tue H407/21 Section B only (1h 15m).', rs: 'Mon H573/02 Ethics (2h). Thu H573/03 half paper (1h 20m).', maths: '', event: 'Send one essay per subject to the external marker.' },
-  { n: 51, mon: '2028-01-18', term: 'T5', label: 'Mock debrief', cc: 'Every paper marked with the OCR scheme; one action point per question type.', ah: 'Debrief. Begin Julio-Claudians: Augustus 1 (settlements of 27 and 23; Res Gestae; Dio 53; Annals 1.2 to 15).', rs: 'Debrief. Begin Christian 7: Pluralism and theology.', maths: '' },
-  { n: 52, mon: '2028-01-25', term: 'T5', cc: 'Re-read the weakest Odyssey and Aeneid books. Section C essay.', ah: 'Augustus 2: succession, army, provinces; LACTOR 17.', rs: 'Christian 7 essay. Begin Christian 8: Pluralism and society.', maths: '', friday: 'RS: 40-mark essay' },
-  { n: 53, mon: '2028-02-01', term: 'T5', cc: '30-mark option essay (Imperial Image).', ah: 'Tiberius: Annals 1 to 4, 6; Suetonius; Velleius; Sejanus. AH M9: 30-mark essay.', rs: 'Christian 8 essay.', maths: '', friday: 'AH M9: 30-mark period essay', event: 'AH M9.' },
-  { n: 54, mon: '2028-02-08', term: 'T5', cc: 'Section C comparative essay, timed.', ah: 'Gaius: Suetonius; Dio; Josephus and Philo. AO4 question.', rs: 'Christian 9 and 10: Gender and society, gender and theology.', maths: '', friday: 'CC: Section C comparative' },
+  { n: 49, mon: '2028-01-03', term: 'T5', label: 'Mock series, week 1', cc: 'Mon H408/11 World of the Hero (2h 30m). Thu H408/34 Democracy (1h 45m).', ah: 'Wed H407/12 Greek paper (2h 30m).', rs: 'Tue H573/01 Philosophy (2h).', maths: '', event: 'Mock papers Mon to Thu; Friday rest.' },
+  { n: 50, mon: '2028-01-10', term: 'T5', label: 'Mock series, week 2', cc: 'Wed H408/22 Imperial Image (1h 45m).', ah: 'Tue H407/21 Section B only (1h 15m).', rs: 'Mon H573/02 Ethics (2h). Thu H573/03 half paper (1h 20m).', maths: '', event: 'Send one essay per subject to the external marker.' },
+  { n: 51, mon: '2028-01-17', term: 'T5', label: 'Mock debrief', cc: 'Every paper marked with the OCR scheme; one action point per question type.', ah: 'Debrief. Begin Julio-Claudians: Augustus 1 (settlements of 27 and 23; Res Gestae; Dio 53; Annals 1.2 to 15).', rs: 'Debrief. Begin Christian 7: Pluralism and theology.', maths: '' },
+  { n: 52, mon: '2028-01-24', term: 'T5', cc: 'Re-read the weakest Odyssey and Aeneid books. Section C essay.', ah: 'Augustus 2: succession, army, provinces; LACTOR 17.', rs: 'Christian 7 essay. Begin Christian 8: Pluralism and society.', maths: '', friday: 'RS: 40-mark essay' },
+  { n: 53, mon: '2028-01-31', term: 'T5', cc: '30-mark option essay (Imperial Image).', ah: 'Tiberius: Annals 1 to 4, 6; Suetonius; Velleius; Sejanus. AH M9: 30-mark essay.', rs: 'Christian 8 essay.', maths: '', friday: 'AH M9: 30-mark period essay', event: 'AH M9.' },
+  { n: 54, mon: '2028-02-07', term: 'T5', cc: 'Section C comparative essay, timed.', ah: 'Gaius: Suetonius; Dio; Josephus and Philo. AO4 question.', rs: 'Christian 9 and 10: Gender and society, gender and theology.', maths: '', friday: 'CC: Section C comparative' },
   { n: 55, mon: '2028-02-21', term: 'T5', cc: '30-mark option essay (Democracy).', ah: 'Claudius 1: accession, letter to the Alexandrians, Britain.', rs: 'Gender essay (RS M9).', maths: '', friday: 'RS M9: 40-mark essay', event: 'Entry deadline about 21 February 2028. RS M9.' },
   { n: 56, mon: '2028-02-28', term: 'T5', cc: 'Essay plans: every past Hero question since 2019.', ah: 'Claudius 2 and Agrippina: Annals 11 and 12.', rs: 'Christian 11: Secularism (Freud, Dawkins).', maths: '', friday: 'AH: 20-mark interpretation' },
   { n: 57, mon: '2028-03-06', term: 'T5', cc: 'Essay plans: every past option question.', ah: 'Nero 1: Annals 14.1 to 16; Seneca and Burrus.', rs: 'Christian 11 essay.', maths: '', friday: 'CC: 30-mark option essay' },
@@ -91,7 +91,7 @@ export const TERMS = [
   { id: 'T2', name: 'Term 2', dates: '4 Jan to 26 Mar 2027', weeks: '11 to 21' },
   { id: 'T3', name: 'Term 3', dates: '12 Apr to 16 Jul 2027', weeks: '22 to 34' },
   { id: 'T4', name: 'Term 4', dates: '6 Sep to 17 Dec 2027', weeks: '35 to 48' },
-  { id: 'T5', name: 'Term 5', dates: '4 Jan to 24 Mar 2028', weeks: '49 to 59' },
+  { id: 'T5', name: 'Term 5', dates: '3 Jan to 24 Mar 2028', weeks: '49 to 59' },
   { id: 'T6', name: 'Term 6', dates: '10 Apr 2028 to the exams', weeks: '60 onward' },
 ];
 

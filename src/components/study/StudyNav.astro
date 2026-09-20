@@ -3,6 +3,7 @@ interface Props { current?: string }
 const { current = '' } = Astro.props;
 
 const items = [
+  { slug: 'today', href: '/study/today/', label: 'Today' },
   { slug: 'index', href: '/study/', label: 'Overview' },
   { slug: 'calendar', href: '/study/calendar/', label: 'Calendar' },
   { slug: 'classics', href: '/study/classics/', label: 'Classical Civ' },

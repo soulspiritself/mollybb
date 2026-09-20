@@ -4,11 +4,8 @@ import Section from '../../components/study/Section.astro';
 import Table from '../../components/study/Table.astro';
 import Milestones from '../../components/study/Milestones.astro';
 import Bios from '../../components/study/Bios.astro';
-import { PAPERS, PHIL, ETHICS, CHRISTIAN, MILESTONES, LEVELS } from '../../data/study/rs';
+import { PAPERS, PHIL, ETHICS, CHRISTIAN, MILESTONES, LEVELS, ESSAYS } from '../../data/study/rs';
 import { byTag } from '../../data/study/people';
-import type { Topic } from '../../data/study/types';
-
-const TopicGrid = (items: Topic[]) => items;
 ---
 <StudyLayout
   title="Religious Studies"
@@ -58,41 +55,7 @@ const TopicGrid = (items: Topic[]) => items;
   </Section>
 
   <Section title="Essay titles by topic" intro="One full essay per topic, in the week shown. The milestones below are the ones marked with the full grid and logged.">
-    <Table head={['Weeks', 'Topic', 'Essay written']} rows={[
-      ['1 to 2', 'Phil 1: Plato and Aristotle', '"Plato’s theory of Forms is more convincing than Aristotle’s account of reality." Discuss.'],
-      ['2 to 3', 'Ethics 1: Natural Law', '"Natural Law is the best approach to ethical decision-making." Discuss.'],
-      ['4 to 5', 'Phil 2: Soul, mind and body', '"Dualism is a better account of the mind than materialism." Discuss.'],
-      ['5 to 6', 'Ethics 2: Situation Ethics', '<span class="ms">M1</span> "Agape is not a sufficient basis for ethics." Discuss.'],
-      ['7 to 8', 'Phil 3: Arguments from observation', '"The teleological argument fails because of Hume’s criticisms." Discuss.'],
-      ['8 to 9', 'Phil 4: Arguments from reason', '"The ontological argument is a valid proof of God’s existence." Discuss.'],
-      ['10', 'Review', '<span class="ms">M2</span> two essays from a past Philosophy paper, 80 min'],
-      ['11 to 12', 'Ethics 3: Kant', '"Kant’s ethics is too rigid to be useful." Discuss.'],
-      ['12 to 13', 'Phil 5: Religious experience', '"Religious experiences are only ever psychological." Discuss.'],
-      ['14 to 15', 'Ethics 4: Utilitarianism', '<span class="ms">M3</span> "Utilitarianism is the most practical ethical theory." Discuss.'],
-      ['15 to 16', 'Phil 6: Problem of evil', '"Hick’s soul-making theodicy is more successful than Augustine’s." Discuss.'],
-      ['17 to 18', 'Ethics 5: Euthanasia', '"Natural Law gives a better response to euthanasia than Situation Ethics." Discuss.'],
-      ['19 to 20', 'Ethics 7: Meta-ethics', '"Ethical statements are merely expressions of emotion." Discuss.'],
-      ['21', 'Review', '<span class="ms">M4</span> two essays, one per paper, 80 min'],
-      ['22 to 23', 'Christian 1: Augustine', '"Augustine’s view of human nature is too pessimistic." Discuss.'],
-      ['23 to 24', 'Christian 2: Death and afterlife', '"Hell is incompatible with a loving God." Discuss.'],
-      ['25 to 26', 'Christian 3: Knowledge of God', '<span class="ms">M5</span> "Natural theology is a better route to knowledge of God than revealed theology." Discuss.'],
-      ['27 to 28', 'Christian 4: Jesus', '"Jesus was primarily a teacher of wisdom." Discuss.'],
-      ['29 to 30', 'Ethics 6: Business ethics', '"Kantian ethics is more useful than utilitarianism for business." Discuss.'],
-      ['31 to 32', 'Phil 7: Nature of God', '"An eternal God cannot know the future and leave humans free." Discuss.'],
-      ['33', 'End-of-year mock', '<span class="ms">M6</span> full Ethics paper, 2 hours'],
-      ['35 to 36', 'Phil 8: Religious language', '"Aquinas’ analogy is the best way of talking about God." Discuss.'],
-      ['37 to 38', 'Phil 9: Twentieth-century language', '<span class="ms">M7</span> "Religious language is meaningless." Discuss.'],
-      ['39 to 41', 'Ethics 8: Conscience', '"Freud’s account of conscience is more convincing than Aquinas’." Discuss.'],
-      ['42', 'Ethics 9: Sexual ethics', '"Religious views on sexual ethics are no longer relevant." Discuss.'],
-      ['43 to 44', 'Christian 5: Moral principles', '"The Bible is the only authority for Christian ethics." Discuss.'],
-      ['45 to 46', 'Christian 6: Bonhoeffer', '<span class="ms">M8</span> "Bonhoeffer’s teaching on obedience has no relevance today." Discuss.'],
-      ['49 to 50', 'January mocks', 'Full Philosophy and Ethics papers; half a Christian Thought paper'],
-      ['51 to 52', 'Christian 7: Pluralism and theology', '"Hick’s pluralism undermines Christian belief." Discuss.'],
-      ['52 to 53', 'Christian 8: Pluralism and society', '"Inter-faith dialogue is essential for Christianity today." Discuss.'],
-      ['54 to 55', 'Christian 9 and 10: Gender', '<span class="ms">M9</span> "Christianity cannot be reconciled with feminism." Discuss.'],
-      ['56 to 57', 'Christian 11: Secularism', '"Secularism is a threat to Christianity." Discuss.'],
-      ['58 to 59', 'Christian 12: Liberation theology', '<span class="ms">M10</span> "Liberation theology has engaged too much with Marx." Discuss.'],
-    ]} />
+    <Table head={['Weeks', 'Topic', 'Essay written']} rows={ESSAYS.map((e) => [e.weeks, e.topic, (e.milestone ? `<span class="ms">${e.milestone}</span> ` : '') + e.essay])} />
     <p class="study-prose">From April 2028: second mocks in the week of 24 April, then three timed essays a week, one per paper, drawn from every past question OCR has set since 2018 (about 150), tallied so each topic is written on at least twice. By then you should hold a bank of forty ten-bullet essay plans.</p>
   </Section>
 
