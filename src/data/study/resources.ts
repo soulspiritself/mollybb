@@ -54,10 +54,10 @@ export const MATHS_LINKS: Resource[] = [
 ];
 
 export const APPS: Resource[] = [
-  { title: 'Anki (free flashcards, spaced repetition)', url: 'https://apps.ankiweb.net/', note: 'The retrieval quiz bank lives here: ten cards per subject per week, written by Molly. Desktop is free; sync to phone.' },
+  { title: 'Anki (free flashcards, spaced repetition)', url: 'https://apps.ankiweb.net/', note: 'The retrieval quiz bank lives here: ten cards per subject per week, written by you. Desktop is free; sync to your phone.' },
   { title: 'Massolit (video lectures by university academics)', url: 'https://www.massolit.io/', note: 'Organised by OCR component. Paid subscription; the nearest thing to a classroom for Classics and RS.' },
   { title: 'Perseus Digital Library', url: 'https://www.perseus.tufts.edu/', note: 'Free texts of Homer, Herodotus, Thucydides, Plutarch, Suetonius, Tacitus with line and chapter numbers. Good for checking a reference.' },
   { title: 'Livius.org', url: 'https://www.livius.org/', note: 'Reliable short articles on people, places and events of the ancient world.' },
   { title: 'Theoi Greek Mythology', url: 'https://www.theoi.com/', note: 'Every god and hero, with the ancient sources quoted.' },
-  { title: 'Desmos scientific calculator', url: 'https://www.desmos.com/scientific', note: 'For checking work on screen. The real Casio is what she uses in sessions.' },
+  { title: 'Desmos scientific calculator', url: 'https://www.desmos.com/scientific', note: 'For checking work on screen. The real Casio is what you use in sessions.' },
 ];

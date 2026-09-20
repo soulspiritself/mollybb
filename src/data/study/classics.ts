@@ -43,7 +43,7 @@ export const TOPICS: Topic[] = [
 export const T1 = {
   head: ['Week', 'Read', 'Practice'],
   rows: [
-    { week: 1, cells: ['1', 'Book 1. Set up book sheets. Download past papers, mark schemes and examiners’ reports.', 'Half a page: what this poem is about, in her own words.'] },
+    { week: 1, cells: ['1', 'Book 1. Set up book sheets. Download past papers, mark schemes and examiners’ reports.', 'Half a page: what this poem is about, in your own words.'] },
     { week: 2, cells: ['2', 'Books 5, 6 (Calypso, Nausicaa)', 'Paragraph: the gods in book 5'] },
     { week: 3, cells: ['3', 'Books 7, 8 (Phaeacians, Demodocus)', 'Paragraph: xenia in Scheria'] },
     { week: 4, cells: ['4', 'Book 9 (Cyclops)', 'Paragraph: Odysseus as hero. First 10-mark passage question.'] },
