@@ -4,6 +4,11 @@ import Section from '../../components/study/Section.astro';
 import Table from '../../components/study/Table.astro';
 import { BOARDS, SESSION, MODULES, WEEKS, SCRIPTS } from '../../data/study/maths';
 import { MATHS_LINKS } from '../../data/study/resources';
+import { LESSONS, lessonsForWeek, lessonUrl } from '../../data/study/lessons';
+
+// Week table with a lesson-link column.
+const weekHead = [...WEEKS.head, 'Lesson page'];
+const weekRows = WEEKS.rows.map((r: any) => Array.isArray(r) ? [...r, ''] : ({ ...r, cells: [...r.cells, r.week ? lessonsForWeek(r.week).map((l) => `<a href="${lessonUrl(l)}">${l.title}</a>`).join('<br>') : ''] }));
 ---
 <StudyLayout
   title="Maths"
@@ -60,12 +65,24 @@ import { MATHS_LINKS } from '../../data/study/resources';
     </div>
   </Section>
 
+  <Section title="The lessons" intro="One page per topic, and every page has the same nine parts in the same order: see it as a picture, do it with your hands, the steps in the same words every time, three worked examples with every key press, five to try with hidden answers, the check, the usual slip, how the exam words it, and one video. The Today page links straight to the lesson for each day.">
+    <p class="study-prose"><a href="/study/maths/lessons/" class="btn">Open the lessons</a></p>
+    <div class="study-grid" style="margin-top:1.25rem">
+      {LESSONS.map((l) => (
+        <a href={lessonUrl(l)} class="study-card">
+          <p class="study-card__kicker">{l.module}{l.weeks.length ? ` · week ${l.weeks.join(', ')}` : ''}</p>
+          <h3 class="study-card__title">{l.title}</h3>
+        </a>
+      ))}
+    </div>
+  </Section>
+
   <Section title="Modules" intro="The 28 DfE statements grouped into twelve modules. Formulas are given in the exam for everything except the area of a triangle and of a circle, which you memorise as two sentences.">
     <Table head={MODULES.head} rows={MODULES.rows} />
   </Section>
 
   <Section title="Week by week" intro="Week 1 is Monday 5 October 2026. Each row is four teaching sessions and a Friday check. Holiday weeks have no formal maths beyond a card game or shopping maths.">
-    <Table head={WEEKS.head} rows={WEEKS.rows} />
+    <Table head={weekHead} rows={weekRows} />
     <div class="study-prose">
       <p><strong>Decision gates.</strong> End of week 10: if the Phase 1 review scores under 50%, weeks 11 and 12 repeat fractions and percentages and everything else moves back a week; the data phase shrinks to four weeks (drop density and surface area, which are rare in the paper). Week 28: the exam booking gate, as in the table.</p>
       <p><strong>After a fail:</strong> results come in one to three weeks with a topic breakdown. Six-week retake plan: two weeks on the two weakest modules, two weeks of mixed past papers, one mock, one rest week, retake in the last week of August or the first week of September 2027. Still within the twelve months.</p>

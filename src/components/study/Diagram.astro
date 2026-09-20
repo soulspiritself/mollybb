@@ -1,0 +1,146 @@
+---
+/**
+ * Small on-brand SVG diagrams for the maths lessons. `kind` selects the drawing;
+ * `p` carries its numbers. Built as SVG strings so they can be generated in loops.
+ */
+interface Props { kind: string; p?: Record<string, any>; caption?: string }
+const { kind, p = {}, caption } = Astro.props;
+const gold = '#c9a96e', bright = '#e8cf9a', deep = '#9c7c44', line = '#3a3a40', text = '#f3efe6', muted = '#a7a39a', bg = '#121214', ink = '#0a0a0b';
+const esc = (s: any) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const T = (x: number, y: number, s: any, fill = text, size = 12, extra = '') => `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" ${extra}>${esc(s)}</text>`;
+const svgOpen = (vb: string, label: string) => `<svg viewBox="${vb}" role="img" aria-label="${esc(label)}">`;
+const range = (n: number) => Array.from({ length: n }, (_, i) => i);
+
+let svg = '';
+switch (kind) {
+  case 'percent-grid': {
+    const shaded = p.shaded ?? 35;
+    let cells = '';
+    for (let r = 0; r < 10; r++) for (let c = 0; c < 10; c++) { const i = r * 10 + c; cells += `<rect x="${c * 24 + 1}" y="${r * 24 + 1}" width="22" height="22" rx="3" fill="${i < shaded ? gold : bg}" stroke="${line}"/>`; }
+    svg = svgOpen('0 0 330 250', `A 10 by 10 grid with ${shaded} squares shaded`) + cells
+      + T(250, 40, `${shaded}%`, bright, 26, 'font-family="Cormorant Garamond, serif"') + T(250, 66, `${shaded} of 100`, muted)
+      + T(250, 110, 'one row', muted) + T(250, 126, '= 10%', text, 13) + T(250, 160, 'one square', muted) + T(250, 176, '= 1%', text, 13) + '</svg>';
+    break;
+  }
+  case 'bar': {
+    const parts = p.parts ?? 5, shaded = p.shaded ?? 3, w = 320 / parts;
+    svg = svgOpen('0 0 340 120', 'A bar split into equal parts') + T(10, 18, p.whole ?? '', muted)
+      + range(parts).map((i) => `<rect x="${10 + i * w}" y="30" width="${w - 2}" height="40" rx="4" fill="${i < shaded ? gold : bg}" stroke="${line}"/>`).join('')
+      + `<line x1="10" y1="84" x2="${10 + shaded * w - 2}" y2="84" stroke="${bright}" stroke-width="2"/>` + T(10, 104, p.part ?? '', bright, 13) + '</svg>';
+    break;
+  }
+  case 'reverse-bar': {
+    const pct = p.pct ?? 80, paid = p.paid ?? '£48';
+    svg = svgOpen('0 0 360 150', 'Bar model for a reverse percentage') + T(10, 16, '100% = the original, unknown', muted)
+      + `<rect x="10" y="26" width="340" height="40" rx="5" fill="${bg}" stroke="${line}"/><rect x="10" y="26" width="${340 * pct / 100}" height="40" rx="5" fill="${gold}"/>`
+      + T(20, 52, `${pct}% = ${paid}`, ink, 14, 'font-weight="600"') + T(20 + 340 * pct / 100, 52, `${100 - pct}% off`, muted)
+      + T(10, 96, `1% = ${paid} ÷ ${pct}`, text, 13) + T(10, 120, '100% = (that) × 100', text, 13) + '</svg>';
+    break;
+  }
+  case 'ratio-boxes': {
+    const a = p.a ?? 3, b = p.b ?? 2, each = p.each ?? '£10', total = p.total ?? '£50', n = a + b, w = Math.min(60, 320 / n);
+    svg = svgOpen('0 0 360 140', `${a} boxes and ${b} boxes sharing ${total}`) + T(10, 16, `${total} shared ${a} : ${b} means ${n} boxes`, muted)
+      + range(n).map((i) => `<rect x="${10 + i * (w + 6)}" y="28" width="${w}" height="${w}" rx="6" fill="${i < a ? gold : deep}" stroke="${line}"/>` + T(10 + i * (w + 6) + w / 2, 28 + w / 2 + 5, each, ink, 13, 'text-anchor="middle" font-weight="600"')).join('')
+      + T(10, 28 + w + 28, `${a} boxes for one person, ${b} for the other. Each box = ${total} ÷ ${n} = ${each}.`, bright, 13) + '</svg>';
+    break;
+  }
+  case 'grid-rect': {
+    const w = p.w ?? 5, h = p.h ?? 3, s = 34;
+    svg = svgOpen(`0 0 ${w * s + 80} ${h * s + 50}`, `A rectangle ${w} by ${h} on squared paper`)
+      + range(h).map((r) => range(w).map((c) => `<rect x="${c * s + 10}" y="${r * s + 10}" width="${s}" height="${s}" fill="${bg}" stroke="${line}"/>` + T(c * s + 10 + s / 2, r * s + 10 + s / 2 + 4, r * w + c + 1, deep, 11, 'text-anchor="middle"')).join('')).join('')
+      + T(w * s / 2 + 10, h * s + 38, `${w} along`, bright, 13, 'text-anchor="middle"') + T(w * s + 20, h * s / 2 + 14, `${h} up`, bright, 13) + '</svg>';
+    break;
+  }
+  case 'triangle-rect':
+    svg = svgOpen('0 0 320 170', 'A triangle drawn inside a rectangle is half of it') + `<rect x="20" y="20" width="200" height="110" fill="${bg}" stroke="${line}"/><polygon points="20,130 220,130 120,20" fill="${gold}" opacity="0.85"/>`
+      + T(120, 152, 'base 200', bright, 13, 'text-anchor="middle"') + T(228, 80, 'height 110', bright, 13) + T(240, 120, 'shaded = half', muted) + '</svg>';
+    break;
+  case 'l-shape':
+    svg = svgOpen('0 0 320 200', 'An L shape split into two rectangles') + `<polygon points="20,20 140,20 140,100 260,100 260,180 20,180" fill="${bg}" stroke="${gold}" stroke-width="2"/><line x1="20" y1="100" x2="140" y2="100" stroke="${bright}" stroke-dasharray="6 4"/>`
+      + T(80, 65, 'A', bright, 13, 'text-anchor="middle"') + T(140, 145, 'B', bright, 13, 'text-anchor="middle"') + T(80, 14, '6 m', muted, 11, 'text-anchor="middle"') + T(8, 105, '8 m', muted, 11, 'transform="rotate(-90 8 105)"') + T(200, 96, '6 m', muted, 11, 'text-anchor="middle"') + T(270, 145, '4 m', muted, 11) + T(140, 196, '12 m', muted, 11, 'text-anchor="middle"') + '</svg>';
+    break;
+  case 'circle':
+    svg = svgOpen('0 0 340 190', 'A circle with its diameter and radius marked') + `<circle cx="100" cy="95" r="80" fill="${bg}" stroke="${gold}" stroke-width="2"/><line x1="20" y1="95" x2="180" y2="95" stroke="${bright}" stroke-width="2"/>`
+      + T(100, 88, 'across = diameter', bright, 12, 'text-anchor="middle"') + `<line x1="100" y1="95" x2="100" y2="15" stroke="${muted}" stroke-width="2"/>` + T(106, 50, 'radius', muted)
+      + T(200, 60, 'round the edge = about', text, 13) + T(200, 80, '3.14 × across', bright, 15) + T(200, 120, 'inside = about', text, 13) + T(200, 140, '3.14 × radius × radius', bright, 15) + '</svg>';
+    break;
+  case 'cylinder':
+    svg = svgOpen('0 0 320 190', 'A cylinder as a stack of circles') + range(6).map((i) => `<ellipse cx="100" cy="${160 - i * 24}" rx="70" ry="18" fill="${i === 5 ? gold : bg}" stroke="${i === 5 ? bright : deep}" opacity="${i === 5 ? 0.9 : 0.8}"/>`).join('')
+      + `<line x1="30" y1="40" x2="30" y2="160" stroke="${line}"/><line x1="170" y1="40" x2="170" y2="160" stroke="${line}"/>` + T(190, 70, 'a stack of circles', text, 13) + T(190, 95, 'circle area × height', bright, 14) + T(190, 130, 'circle area =', muted) + T(190, 148, '3.14 × r × r', muted) + '</svg>';
+    break;
+  case 'cuboid': {
+    let cubes = '';
+    for (const z of [0, 1]) for (const y of [0, 1]) for (const x of [0, 1, 2, 3]) { const ox = 30 + x * 34 + z * 14, oy = 120 - y * 34 - z * 14; cubes += `<rect x="${ox}" y="${oy}" width="34" height="34" fill="${bg}" stroke="${gold}"/><polygon points="${ox},${oy} ${ox + 14},${oy - 14} ${ox + 48},${oy - 14} ${ox + 34},${oy}" fill="${deep}" stroke="${gold}"/><polygon points="${ox + 34},${oy} ${ox + 48},${oy - 14} ${ox + 48},${oy + 20} ${ox + 34},${oy + 34}" fill="#7a6035" stroke="${gold}"/>`; }
+    svg = svgOpen('0 0 320 190', 'A cuboid built from cubes') + cubes + T(200, 60, '4 along, 2 up, 2 back', text, 13) + T(200, 85, '4 × 2 × 2 = 16 cubes', bright, 14) + T(200, 120, 'length × width × height', muted) + '</svg>';
+    break;
+  }
+  case 'number-line': {
+    const from = p.from ?? -5, to = p.to ?? 5, marks: any[] = p.marks ?? [], n = to - from, X = (v: number) => 20 + (v - from) * (300 / n);
+    const whole = Number.isInteger(from) && Number.isInteger(to) && n <= 20;
+    svg = svgOpen('0 0 340 90', 'A number line') + `<line x1="10" y1="40" x2="330" y2="40" stroke="${muted}" stroke-width="2"/>`
+      + (whole ? range(n + 1).map((i) => { const v = from + i; return `<line x1="${X(v)}" y1="34" x2="${X(v)}" y2="46" stroke="${muted}"/>` + T(X(v), 66, v, v < 0 ? deep : text, 12, 'text-anchor="middle"'); }).join('')
+        : [from, to].map((v) => `<line x1="${X(v)}" y1="34" x2="${X(v)}" y2="46" stroke="${muted}"/>` + T(X(v), 66, v, text, 12, 'text-anchor="middle"')).join(''))
+      + marks.map((m) => `<circle cx="${X(m.v)}" cy="40" r="6" fill="${gold}"/>` + T(X(m.v), 22, m.label, bright, 11, 'text-anchor="middle"')).join('') + '</svg>';
+    break;
+  }
+  case 'staircase':
+    svg = svgOpen('0 0 360 170', 'The metric staircase: km, m, cm, mm') + ['km', 'm', 'cm', 'mm'].map((u, i) => `<rect x="${20 + i * 80}" y="${20 + i * 32}" width="80" height="32" fill="${i % 2 ? bg : deep}" stroke="${line}"/>` + T(60 + i * 80, 41 + i * 32, u, text, 14, 'text-anchor="middle"')).join('')
+      + T(110, 30, '× 1000', bright) + T(190, 62, '× 100', bright) + T(270, 94, '× 10', bright) + T(20, 160, 'Down the stairs (bigger unit to smaller): multiply. Up: divide.', muted) + '</svg>';
+    break;
+  case 'speed-triangle':
+    svg = svgOpen('0 0 320 170', 'The distance, speed, time triangle') + `<polygon points="100,20 20,140 180,140" fill="${bg}" stroke="${gold}" stroke-width="2"/><line x1="60" y1="80" x2="140" y2="80" stroke="${gold}"/><line x1="100" y1="80" x2="100" y2="140" stroke="${gold}"/>`
+      + T(100, 66, 'D', bright, 20, 'text-anchor="middle" font-family="Cormorant Garamond, serif"') + T(76, 118, 'S', bright, 20, 'text-anchor="middle" font-family="Cormorant Garamond, serif"') + T(124, 118, 'T', bright, 20, 'text-anchor="middle" font-family="Cormorant Garamond, serif"')
+      + T(200, 60, 'Cover the one you want.', text, 13) + T(200, 85, 'S = D ÷ T', muted) + T(200, 105, 'T = D ÷ S', muted) + T(200, 125, 'D = S × T', muted) + '</svg>';
+    break;
+  case 'outcome-grid':
+    svg = svgOpen('0 0 320 170', 'Two coins: a grid of the four outcomes') + T(120, 24, 'second coin', muted, 12, 'text-anchor="middle"') + T(90, 52, 'H', text, 13, 'text-anchor="middle"') + T(170, 52, 'T', text, 13, 'text-anchor="middle"') + T(30, 88, 'H', text, 13, 'text-anchor="middle"') + T(30, 148, 'T', text, 13, 'text-anchor="middle"')
+      + `<rect x="50" y="60" width="80" height="50" fill="${gold}" stroke="${line}"/>` + T(90, 90, 'HH', ink, 13, 'text-anchor="middle" font-weight="600"')
+      + `<rect x="130" y="60" width="80" height="50" fill="${bg}" stroke="${line}"/>` + T(170, 90, 'HT', text, 13, 'text-anchor="middle"')
+      + `<rect x="50" y="110" width="80" height="50" fill="${bg}" stroke="${line}"/>` + T(90, 140, 'TH', text, 13, 'text-anchor="middle"')
+      + `<rect x="130" y="110" width="80" height="50" fill="${bg}" stroke="${line}"/>` + T(170, 140, 'TT', text, 13, 'text-anchor="middle"')
+      + T(225, 90, 'both heads:', bright, 13) + T(225, 110, '1 out of 4', bright, 15) + '</svg>';
+    break;
+  case 'coordinates': {
+    const pts: any[] = p.points ?? [{ x: 2, y: 3, l: '(2, 3)' }, { x: -3, y: 1, l: '(-3, 1)' }, { x: -2, y: -2, l: '(-2, -2)' }];
+    const X = (v: number) => 150 + v * 25, Y = (v: number) => 90 - v * 25;
+    svg = svgOpen('0 0 300 180', 'Coordinates in four quadrants')
+      + [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5].map((v) => `<line x1="${X(v)}" y1="10" x2="${X(v)}" y2="170" stroke="${line}"/>`).join('')
+      + [-3, -2, -1, 1, 2, 3].map((v) => `<line x1="25" y1="${Y(v)}" x2="275" y2="${Y(v)}" stroke="${line}"/>`).join('')
+      + `<line x1="25" y1="${Y(0)}" x2="275" y2="${Y(0)}" stroke="${muted}" stroke-width="2"/><line x1="${X(0)}" y1="10" x2="${X(0)}" y2="170" stroke="${muted}" stroke-width="2"/>`
+      + T(268, Y(0) - 6, 'x', muted, 11) + T(X(0) + 6, 18, 'y', muted, 11)
+      + pts.map((q) => `<circle cx="${X(q.x)}" cy="${Y(q.y)}" r="5" fill="${gold}"/>` + T(X(q.x) + 8, Y(q.y) - 6, q.l, bright, 11)).join('') + T(30, 166, 'along first, then up', muted, 11) + '</svg>';
+    break;
+  }
+  case 'pie': {
+    const slices: any[] = p.slices ?? [{ l: 'Bus', v: 12 }, { l: 'Walk', v: 9 }, { l: 'Car', v: 6 }, { l: 'Bike', v: 3 }];
+    const total = slices.reduce((s, x) => s + x.v, 0); const cols = [gold, deep, '#7a6035', bright]; let a = -Math.PI / 2;
+    const paths = slices.map((s, i) => { const ang = (s.v / total) * 2 * Math.PI; const x1 = 95 + 80 * Math.cos(a), y1 = 95 + 80 * Math.sin(a); a += ang; const x2 = 95 + 80 * Math.cos(a), y2 = 95 + 80 * Math.sin(a); const large = ang > Math.PI ? 1 : 0; return `<path d="M95,95 L${x1},${y1} A80,80 0 ${large} 1 ${x2},${y2} Z" fill="${cols[i % 4]}" stroke="${ink}"/>`; }).join('');
+    svg = svgOpen('0 0 340 190', 'A pie chart') + paths + slices.map((s, i) => `<rect x="200" y="${30 + i * 30}" width="14" height="14" fill="${cols[i % 4]}"/>` + T(222, 42 + i * 30, `${s.l}: ${s.v} of ${total} = ${Math.round(360 * s.v / total)}°`, text)).join('') + '</svg>';
+    break;
+  }
+  case 'scatter':
+    svg = svgOpen('0 0 320 180', 'A scatter diagram with positive correlation') + `<line x1="40" y1="150" x2="300" y2="150" stroke="${muted}"/><line x1="40" y1="20" x2="40" y2="150" stroke="${muted}"/>`
+      + [[60, 130], [85, 118], [110, 122], [130, 100], [155, 92], [175, 80], [200, 70], [225, 58], [250, 48], [275, 40]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="${gold}"/>`).join('')
+      + `<line x1="55" y1="135" x2="285" y2="38" stroke="${bright}" stroke-dasharray="6 4"/>` + T(170, 170, 'temperature', muted, 11, 'text-anchor="middle"') + T(14, 90, 'ice creams sold', muted, 11, 'transform="rotate(-90 14 90)"') + T(60, 36, 'positive correlation: as one goes up, so does the other', bright) + '</svg>';
+    break;
+  case 'column': {
+    const rows: string[] = p.rows ?? ['  347', '+ 285', '-----', '  632'];
+    const h = 30 + rows.length * 24;
+    svg = svgOpen(`0 0 420 ${h}`, 'Written working') + rows.map((r, i) => T(20, 30 + i * 24, r, i === rows.length - 1 ? bright : text, 17, 'font-family="ui-monospace, Menlo, monospace" style="white-space: pre"')).join('')
+      + (p.carry ? T(20, 12, p.carry, deep, 12, 'font-family="ui-monospace, Menlo, monospace" style="white-space: pre"') : '') + '</svg>';
+    break;
+  }
+  default:
+    svg = '';
+}
+---
+<figure class="dg">
+  <Fragment set:html={svg} />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .dg { margin: 1rem 0 1.25rem; padding: 1rem 1rem 0.6rem; border: 1px solid var(--black-line); border-radius: 12px; background: var(--black-soft); max-width: 520px; }
+  .dg :global(svg) { width: 100%; height: auto; display: block; }
+  .dg figcaption { font-size: 0.8rem; color: var(--text-faint); margin-top: 0.5rem; }
+</style>

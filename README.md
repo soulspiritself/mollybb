@@ -78,6 +78,10 @@ Task ids are `YYYY-MM-DD:slot` (slots: maths, cc-am, cc-pm, ah-am, ah-pm, rs-am,
 
 Local testing with the function: `netlify dev --port 8888` (uses a local Blobs sandbox, not production data).
 
+### /study/maths/lessons (one page per maths topic)
+
+`src/data/study/lessons-number.ts`, `lessons-measures.ts`, `lessons-data.ts` hold 28 lessons (type `Lesson` in `types.ts`); `lessons.ts` joins them. `src/pages/study/maths/lessons/[slug].astro` renders every lesson in the same nine-part shape. Diagrams are SVG strings built in `src/components/study/Diagram.astro` (add a new `case` for a new picture). Video links live in `videos.ts` and must be URLs that were actually opened and checked. A lesson's `weeks` array is what links it from the Today page and from the maths week table.
+
 The "This week" banner and the highlighted calendar row are computed in the browser from today's date and `calendar.ts`, so nothing needs updating week to week. To change what a week says, edit that week's row in `calendar.ts` and redeploy. The source markdown the plan was written from is in `~/Documents/Claude/study-plan-2026-28/`.
 
 ## Deploy (Netlify)

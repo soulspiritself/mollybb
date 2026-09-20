@@ -9,6 +9,7 @@ import * as CC from './classics';
 import * as AH from './history';
 import * as RS from './rs';
 import { WEEKS as MW } from './maths';
+import { lessonsForWeek, lessonUrl } from './lessons';
 
 export type Res = { label: string; kind: 'book' | 'online' | 'notes'; url?: string; note?: string };
 export type Subject = 'Maths' | 'Classical Civ' | 'Ancient History' | 'Religious Studies' | 'Reading' | 'Assessment' | 'Review';
@@ -234,15 +235,16 @@ export function buildDay(date: string): DayPlan {
 
   // Maths, 9:00
   const mw = mathsWeeks.get(n);
+  const lessonRes: Res[] = lessonsForWeek(n).map((l) => ({ label: `Lesson page: ${l.title}`, kind: 'online', url: lessonUrl(l), note: 'the picture, the steps, worked examples, practice, video' }));
   if (mw) {
     const isFri = wd === 4;
     const mt = testsToday.find((x) => x.subject === 'Maths');
     if (mt) {
-      t.push({ id: mt.id, time: '9:00', subject: 'Maths', title: mt.title, detail: [mt.format, mt.note].filter(Boolean).join('. '), res: /mock|exam|section a/i.test(mt.code) ? R.mathsMock : R.maths, test: true, code: mt.code });
+      t.push({ id: mt.id, time: '9:00', subject: 'Maths', title: mt.title, detail: [mt.format, mt.note].filter(Boolean).join('. '), res: [...lessonRes, ...(/mock|exam|section a/i.test(mt.code) ? R.mathsMock : R.maths)], test: true, code: mt.code });
     } else if (isFri) {
-      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Friday check${mw[3] ? `: ${mw[3]}` : ''}`, detail: 'Five questions from this week’s topic plus three re-dos from the error log. Scored out of 8. Under 5 means Monday repeats the weakest topic.', res: R.maths, test: true, code: 'Friday check' });
+      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Friday check${mw[3] ? `: ${mw[3]}` : ''}`, detail: 'Five questions from this week’s topic plus three re-dos from the error log. Scored out of 8. Under 5 means Monday repeats the weakest topic.', res: [...lessonRes, ...R.maths], test: true, code: 'Friday check' });
     } else {
-      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Maths session, 30 minutes${wd === 0 ? ' (Monday: ten-minute review deck first)' : ''}`, detail: mw[2], res: R.maths });
+      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Maths session, 30 minutes${wd === 0 ? ' (Monday: ten-minute review deck first)' : ''}`, detail: mw[2], res: [...lessonRes, ...R.maths] });
     }
   } else if (week.maths) {
     t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: week.maths, res: R.mathsMock });

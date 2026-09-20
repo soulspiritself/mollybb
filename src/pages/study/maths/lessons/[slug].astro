@@ -1,0 +1,128 @@
+---
+import StudyLayout from '../../../../layouts/StudyLayout.astro';
+import Diagram from '../../../../components/study/Diagram.astro';
+import { LESSONS, MODULE_NAMES } from '../../../../data/study/lessons';
+import { VIDEOS } from '../../../../data/study/videos';
+
+export function getStaticPaths() {
+  return LESSONS.map((l) => ({ params: { slug: l.slug }, props: { lesson: l } }));
+}
+const { lesson } = Astro.props;
+const i = LESSONS.findIndex((l) => l.slug === lesson.slug);
+const prev = i > 0 ? LESSONS[i - 1] : null;
+const next = i < LESSONS.length - 1 ? LESSONS[i + 1] : null;
+const videos = VIDEOS[lesson.slug] || [];
+const weeks = lesson.weeks.length ? `Weeks ${lesson.weeks.join(', ')}` : '';
+---
+<StudyLayout
+  title={lesson.title}
+  eyebrow={`Maths lesson · ${lesson.module} ${MODULE_NAMES[lesson.module] || ''} · ${weeks}`}
+  lead={lesson.oneLine}
+  current="maths"
+>
+  <div class="wrap lesson">
+    <nav class="lesson__nav" aria-label="Lessons">
+      <a href="/study/maths/lessons/">All lessons</a>
+      {prev && <a href={`/study/maths/lessons/${prev.slug}/`}>&larr; {prev.title}</a>}
+      {next && <a href={`/study/maths/lessons/${next.slug}/`}>{next.title} &rarr;</a>}
+    </nav>
+
+    <section class="lesson__s">
+      <h2 class="lesson__h">1. See it</h2>
+      <Diagram kind={lesson.diagram.kind} p={lesson.diagram.p} caption={lesson.diagram.caption} />
+    </section>
+
+    <section class="lesson__s">
+      <h2 class="lesson__h">2. Do it with your hands first</h2>
+      <p class="lesson__p">{lesson.hands}</p>
+    </section>
+
+    <section class="lesson__s">
+      <h2 class="lesson__h">3. The steps, the same every time</h2>
+      <ol class="lesson__steps">
+        {lesson.steps.map((s) => <li>{s}</li>)}
+      </ol>
+    </section>
+
+    <section class="lesson__s">
+      <h2 class="lesson__h">4. Worked examples, every step written out</h2>
+      {lesson.examples.map((ex, k) => (
+        <article class="ex">
+          <p class="ex__k">Example {k + 1}</p>
+          <p class="ex__q">{ex.q}</p>
+          <ol class="ex__steps">{ex.steps.map((s) => <li>{s}</li>)}</ol>
+          <p class="ex__a">{ex.answer}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="lesson__s">
+      <h2 class="lesson__h">5. Now you. Same shape, new numbers</h2>
+      <p class="lesson__p">Do each one on paper with the steps above. Draw the picture first. Then open the answer.</p>
+      <ol class="pr">
+        {lesson.practice.map((p) => (
+          <li>
+            <p class="pr__q">{p.q}</p>
+            <details class="pr__d"><summary>Show the answer</summary><p class="pr__a">{p.a}</p></details>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="lesson__s lesson__s--row">
+      <div>
+        <h2 class="lesson__h">6. Check yourself</h2>
+        <p class="lesson__p">{lesson.check}</p>
+      </div>
+      <div>
+        <h2 class="lesson__h">7. The usual slip</h2>
+        <p class="lesson__p">{lesson.slip}</p>
+      </div>
+      <div>
+        <h2 class="lesson__h">8. How the exam says it</h2>
+        <p class="lesson__p">{lesson.examWords}</p>
+      </div>
+    </section>
+
+    <section class="lesson__s">
+      <h2 class="lesson__h">9. Watch</h2>
+      {videos.length ? (
+        <ul class="vids">{videos.map((v) => <li><a href={v.url} target="_blank" rel="noopener">{v.title}</a> <span class="vids__s">{v.source}</span></li>)}</ul>
+      ) : (
+        <p class="lesson__p">Search Corbettmaths for "{lesson.title}" and watch one video only, the first that shows the method above. If it shows a different method, close it.</p>
+      )}
+    </section>
+
+    <nav class="lesson__nav lesson__nav--foot" aria-label="Lessons">
+      {prev && <a href={`/study/maths/lessons/${prev.slug}/`}>&larr; {prev.title}</a>}
+      <a href="/study/today/">Back to today</a>
+      {next && <a href={`/study/maths/lessons/${next.slug}/`}>{next.title} &rarr;</a>}
+    </nav>
+  </div>
+</StudyLayout>
+
+<style>
+  .lesson { max-width: 860px; }
+  .lesson__nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+  .lesson__nav--foot { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--black-line); }
+  .lesson__s { padding: 1.5rem 0; border-top: 1px solid var(--black-line); }
+  .lesson__s--row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+  .lesson__h { font-size: 1.5rem; color: var(--gold-bright); margin-bottom: 0.75rem; }
+  .lesson__p { color: var(--text-muted); max-width: 68ch; font-size: 1rem; }
+  .lesson__steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; max-width: 68ch; }
+  .lesson__steps li { position: relative; padding: 0.8rem 1rem 0.8rem 3.2rem; border: 1px solid var(--black-line); border-radius: 12px; color: var(--text); font-size: 1rem; background: linear-gradient(180deg, rgba(201,169,110,0.05), transparent); }
+  .lesson__steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 0.9rem; top: 0.55rem; font-family: var(--serif); font-size: 1.5rem; color: var(--gold); }
+  .ex { margin: 0 0 1.25rem; padding: 1.2rem 1.3rem; border: 1px solid var(--black-line); border-radius: 14px; background: var(--black-soft); max-width: 72ch; }
+  .ex__k { font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+  .ex__q { font-family: var(--serif); font-size: 1.25rem; color: var(--text); margin-bottom: 0.8rem; line-height: 1.35; }
+  .ex__steps { padding-left: 1.3rem; margin: 0 0 0.8rem; display: grid; gap: 0.35rem; color: var(--text-muted); }
+  .ex__steps li::marker { color: var(--gold-deep); }
+  .ex__a { margin: 0; color: var(--gold-bright); font-weight: 600; }
+  .pr { padding-left: 1.3rem; display: grid; gap: 1rem; max-width: 72ch; }
+  .pr li::marker { color: var(--gold); font-family: var(--serif); font-size: 1.2rem; }
+  .pr__q { color: var(--text); margin-bottom: 0.4rem; }
+  .pr__d summary { cursor: pointer; color: var(--gold); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; }
+  .pr__a { margin: 0.5rem 0 0; color: var(--text-muted); padding: 0.7rem 0.9rem; border-left: 2px solid var(--gold-deep); background: var(--black-soft); border-radius: 0 10px 10px 0; }
+  .vids { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+  .vids__s { font-size: 0.72rem; color: var(--text-faint); letter-spacing: 0.08em; text-transform: uppercase; margin-left: 0.4rem; }
+</style>

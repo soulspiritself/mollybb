@@ -1,0 +1,32 @@
+---
+import StudyLayout from '../../../../layouts/StudyLayout.astro';
+import Section from '../../../../components/study/Section.astro';
+import { LESSONS, MODULE_NAMES } from '../../../../data/study/lessons';
+
+const groups: { key: string; title: string; mods: string[] }[] = [
+  { key: 'x', title: 'Before anything: the calculator and the exam', mods: ['X'] },
+  { key: 'n', title: 'Number', mods: ['N1', 'N2', 'N3', 'N4', 'N5', 'N6'] },
+  { key: 'm', title: 'Money, measures, shape and space', mods: ['M1', 'M2', 'M3', 'M4'] },
+  { key: 'h', title: 'Data and probability', mods: ['H1', 'H2'] },
+];
+---
+<StudyLayout
+  title="Maths lessons"
+  eyebrow="One page per topic · the same shape every time"
+  lead="Every lesson has the same nine parts, in the same order: see it, do it with your hands, the steps, three worked examples with every key press, five to try with hidden answers, the check, the usual slip, how the exam words it, and one video. Nothing abstract arrives before the picture."
+  current="maths"
+>
+  {groups.map((g) => (
+    <Section title={g.title}>
+      <div class="study-grid">
+        {LESSONS.filter((l) => g.mods.includes(l.module)).map((l) => (
+          <a href={`/study/maths/lessons/${l.slug}/`} class="study-card">
+            <p class="study-card__kicker">{l.module} {MODULE_NAMES[l.module]}{l.weeks.length ? ` · weeks ${l.weeks.join(', ')}` : ''}</p>
+            <h3 class="study-card__title">{l.title}</h3>
+            <p class="study-card__body">{l.oneLine}</p>
+          </a>
+        ))}
+      </div>
+    </Section>
+  ))}
+</StudyLayout>

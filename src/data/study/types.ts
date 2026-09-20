@@ -50,3 +50,26 @@ export interface Resource {
   note?: string;
   isbn?: string;
 }
+
+// ---- Maths lessons ----
+export interface WorkedExample {
+  q: string;            // the question, in real-life words
+  steps: string[];      // every step written out, including calculator keys
+  answer: string;       // the answer sentence
+}
+export interface Practice { q: string; a: string }
+export interface Lesson {
+  slug: string;
+  module: string;       // 'N1', 'M3', 'H2', 'X'
+  title: string;
+  weeks: number[];      // teaching weeks this lesson is used
+  oneLine: string;      // what it is, in plain words
+  hands: string;        // do it with objects first
+  diagram: { kind: string; p?: Record<string, any>; caption?: string };
+  steps: string[];      // the same words every time
+  examples: WorkedExample[];
+  practice: Practice[];
+  check: string;        // the self-check
+  slip: string;         // the usual mistake
+  examWords: string;    // how the paper phrases it
+}
