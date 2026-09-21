@@ -37,11 +37,12 @@ export const TEXTBOOKS: Resource[] = [
   { title: 'Waterfield, Eyre, Dean, A Level Religious Studies: Developments in Christian Thought (Hodder)', isbn: '9781510479968' },
   { title: 'Ahluwalia, Oxford A Level Religious Studies for OCR: Revision Guide (OUP)', isbn: '9780198423751', note: '60 practice questions with mark schemes.' },
   { title: 'Baron, Capone, Dunsmore, Model Essays for OCR GCE Religious Studies H573', url: 'https://www.amazon.co.uk/dp/1980289867', isbn: '9781980289869', note: 'Essays marked to the six OCR levels, paragraph by paragraph. The most useful purchase in this subject. Also sold at peped.org (Philosophical Investigations), whose site certificate is sometimes broken.' },
-  { title: 'CGP Functional Skills Maths Level 2: Study and Test Practice', note: 'About £8. One page of explanation and one of questions per topic.' },
+  { title: 'CGP Functional Skills Maths Level 1: Study and Test Practice', note: 'About £8. Weeks 1 to 11: the same topics as Level 2 with friendlier numbers and fewer steps, so every early session ends on a success.' },
+  { title: 'CGP Functional Skills Maths Level 2: Study and Test Practice', note: 'About £8. From week 12, when the Level 2-only content begins (reverse percentages, compound interest, circles, grouped means).' },
 ];
 
 export const MATHS_LINKS: Resource[] = [
-  { title: 'Pearson Edexcel Functional Skills past papers and mark schemes', url: 'https://qualifications.pearson.com/en/support/support-topics/exams/past-papers.html?Qualification-Family=functional-skills&Qualification-Subject=Mathematics', note: 'The main practice source. More Level 2 papers than any other board; the content is identical.' },
+  { title: 'Pearson Edexcel Functional Skills past papers and mark schemes (Level 1 and Level 2)', url: 'https://qualifications.pearson.com/en/support/support-topics/exams/past-papers.html?Qualification-Family=functional-skills&Qualification-Subject=Mathematics', note: 'The main practice source. Use the Level 1 papers for weeks 1 to 11 and the diagnostic, the Level 2 papers from week 12 and for every mock. The content is identical across boards.' },
   { title: 'Open Awards Functional Skills (the board we plan to sit)', url: 'https://openawards.org.uk/functional-skills/', note: 'Sample assessments and the remote-invigilation rules.' },
   { title: 'City and Guilds 4748 Functional Skills maths', url: 'https://www.cityandguilds.com/qualifications-and-apprenticeships/skills-for-work-and-life/english-mathematics-and-ict-skills/4748-functional-skills', note: 'Sample papers for the Phase 4 mocks.' },
   { title: 'Pass Functional Skills: past-paper hub (all boards)', url: 'https://passfunctionalskills.co.uk/functional-skills-maths-level-2-past-papers/' },

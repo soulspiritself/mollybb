@@ -144,9 +144,14 @@ const R = {
     { label: 'Baron, Model Essays for OCR H573 (read after writing, never before)', kind: 'book' } as Res,
     { label: 'OCR H573 past papers and mark schemes', kind: 'online', url: OCR.rs } as Res,
   ],
+  mathsL1: [
+    { label: 'CGP Functional Skills Maths Level 1: the page for this topic', kind: 'book', note: 'Level 1 first: same topics, friendlier numbers' } as Res,
+    { label: 'Pearson Functional Skills Level 1 past papers (for the two exam questions)', kind: 'online', url: 'https://qualifications.pearson.com/en/support/support-topics/exams/past-papers.html?Qualification-Family=functional-skills&Qualification-Subject=Mathematics' } as Res,
+    { label: 'Skills Workshop worksheets by statement', kind: 'online', url: 'https://www.skillsworkshop.org/maths' } as Res,
+  ],
   maths: [
     { label: 'CGP Functional Skills Maths Level 2: the page for this topic', kind: 'book' } as Res,
-    { label: 'Pearson Functional Skills past papers (for the two exam questions)', kind: 'online', url: 'https://qualifications.pearson.com/en/support/support-topics/exams/past-papers.html?Qualification-Family=functional-skills&Qualification-Subject=Mathematics' } as Res,
+    { label: 'Pearson Functional Skills Level 2 past papers (for the two exam questions)', kind: 'online', url: 'https://qualifications.pearson.com/en/support/support-topics/exams/past-papers.html?Qualification-Family=functional-skills&Qualification-Subject=Mathematics' } as Res,
     { label: 'Skills Workshop worksheets by Level 2 statement', kind: 'online', url: 'https://www.skillsworkshop.org/maths' } as Res,
   ],
   mathsMock: [
@@ -156,6 +161,7 @@ const R = {
   notes: (what: string) => ({ label: what, kind: 'notes' } as Res),
 };
 
+const mathsRes = (w: number): Res[] => (w <= 11 ? R.mathsL1 : R.maths);
 const ccRes = (w: number): Res[] => w <= 10 ? R.odyssey : w <= 21 ? R.aeneid : w <= 34 ? R.democracy : w <= 48 ? R.imperial : [...R.odyssey.slice(0, 1), ...R.aeneid.slice(0, 1), ...R.ccPapers];
 const ahRes = (w: number): Res[] => w <= 16 ? R.greek : w <= 21 ? [...R.xen, ...R.greek] : w <= 34 ? R.athens : w <= 48 ? R.republic : w <= 59 ? R.jc : R.ahPapers;
 const rsRes = (topic: string): Res[] => [
@@ -183,8 +189,9 @@ export const TESTS: TestItem[] = (() => {
   for (const m of RS.MILESTONES) add('Religious Studies', m.code, m.week, testDay('Religious Studies', m.week), m.question, m.format, m.note);
   // Maths
   add('Maths', 'Diagnostic', 1, 3, 'Diagnostic: a Level 1 sample paper, Section B, untimed, with the calculator', 'Untimed', 'Chosen so it ends in success. Note the three weakest areas; no judgement.');
-  add('Maths', 'Phase 1 review', 10, 4, 'Phase 1 review: 8 mixed questions on number and money', '25 min timed', 'Under 50% means weeks 11 and 12 repeat fractions and percentages.');
-  add('Maths', 'Section A', 21, 4, 'Section A of a past paper, no calculator', 'Timed');
+  add('Maths', 'Phase 1 review', 10, 4, 'Phase 1 review: 8 mixed questions on number and money (a Level 1 paper)', '25 min timed', 'Decision point. Under 50%: weeks 11 and 12 repeat fractions and percentages, and book the Level 1 exam for February 2027 as a stepping stone. 50% or more: skip Level 1 and move to the Level 2 book in week 12.');
+  add('Maths', 'Level 1 exam (optional)', 17, 0, 'Functional Skills Maths Level 1 exam, only if chosen at the week 10 decision point', 'Section A about 25 min, Section B about 1h 20m; about £100 to £150, sat at home', 'A certificate and a confidence boost on the way to Level 2. Tick and record the result if sat; leave blank if skipped.');
+  add('Maths', 'Section A', 21, 4, 'Section A of a Level 2 past paper, no calculator', 'Timed');
   add('Maths', 'Mock 1', 27, 3, 'Mock 1: full paper split across the week; marked Thursday', 'Full paper', 'The booking gate: 55% or more books the exam for w/c 21 June.');
   add('Maths', 'Mock 2', 29, 0, 'Mock 2: full paper in one sitting under exam conditions', '1h 55m');
   add('Maths', 'Mock 3', 30, 0, 'Mock 3: full paper in one sitting', '1h 55m');
@@ -240,11 +247,11 @@ export function buildDay(date: string): DayPlan {
     const isFri = wd === 4;
     const mt = testsToday.find((x) => x.subject === 'Maths');
     if (mt) {
-      t.push({ id: mt.id, time: '9:00', subject: 'Maths', title: mt.title, detail: [mt.format, mt.note].filter(Boolean).join('. '), res: [...lessonRes, ...(/mock|exam|section a/i.test(mt.code) ? R.mathsMock : R.maths)], test: true, code: mt.code });
+      t.push({ id: mt.id, time: '9:00', subject: 'Maths', title: mt.title, detail: [mt.format, mt.note].filter(Boolean).join('. '), res: [...lessonRes, ...(/mock|exam|section a/i.test(mt.code) ? R.mathsMock : mathsRes(n))], test: true, code: mt.code });
     } else if (isFri) {
-      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Friday check${mw[3] ? `: ${mw[3]}` : ''}`, detail: 'Five questions from this week’s topic plus three re-dos from the error log. Scored out of 8. Under 5 means Monday repeats the weakest topic.', res: [...lessonRes, ...R.maths], test: true, code: 'Friday check' });
+      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Friday check${mw[3] ? `: ${mw[3]}` : ''}`, detail: 'Five questions from this week’s topic plus three re-dos from the error log. Scored out of 8. Under 5 means Monday repeats the weakest topic.', res: [...lessonRes, ...mathsRes(n)], test: true, code: 'Friday check' });
     } else {
-      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Maths session, 30 minutes${wd === 0 ? ' (Monday: ten-minute review deck first)' : ''}`, detail: mw[2], res: [...lessonRes, ...R.maths] });
+      t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: `Maths session, 30 minutes${wd === 0 ? ' (Monday: ten-minute review deck first)' : ''}`, detail: mw[2], res: [...lessonRes, ...mathsRes(n)] });
     }
   } else if (week.maths) {
     t.push({ id: id('maths'), time: '9:00', subject: 'Maths', title: week.maths, res: R.mathsMock });
